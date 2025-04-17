@@ -1,7 +1,7 @@
 {
   "description": "Interview evaluation agent for assessing data science candidate skills",
+  "dependencies": ["."],
   "config_keys": ["OPENAI_API_KEY", "LANGSMITH_API_KEY"],
-  "requirements_file": "requirements.txt",
   "env": ".env",
   "graphs": {
     "evaluator": {
