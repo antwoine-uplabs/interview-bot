@@ -5,8 +5,8 @@
  * It provides methods for uploading transcripts and retrieving evaluation results.
  */
 
-// API base URL - would be stored in environment variables in production
-const API_BASE_URL = 'http://localhost:8000'; // FastAPI backend URL
+// API base URL from environment variables
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 // Types
 export interface EvaluationCriterion {
@@ -150,27 +150,60 @@ async function pollEvaluationResults(interviewId: string, candidateName: string,
  */
 export async function evaluateTranscript(interviewId: string, candidateName: string): Promise<Record<string, unknown>> {
   try {
-    const response = await fetch(`${API_BASE_URL}/evaluate`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...getAuthHeader()
-      },
-      body: JSON.stringify({
-        interview_id: interviewId,
-        candidate_name: candidateName
-      }),
-    });
+    // This function can work with both FastAPI backend and Supabase Edge Functions
+    // Determine which endpoint to use based on environment configuration
+    const useEdgeFunction = import.meta.env.VITE_USE_EDGE_FUNCTIONS === 'true';
     
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new ApiError(
-        errorData.detail || `Evaluation failed with status: ${response.status}`, 
-        response.status
-      );
+    if (useEdgeFunction) {
+      // Use Supabase Edge Function
+      const edgeFunctionUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/evaluate-transcript`;
+      
+      const response = await fetch(edgeFunctionUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('supabase_auth_token')}`,
+          'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY
+        },
+        body: JSON.stringify({
+          interview_id: interviewId,
+          candidate_name: candidateName
+        }),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new ApiError(
+          errorData.error || `Evaluation failed with status: ${response.status}`, 
+          response.status
+        );
+      }
+      
+      return await response.json();
+    } else {
+      // Use FastAPI backend (original implementation)
+      const response = await fetch(`${API_BASE_URL}/evaluate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeader()
+        },
+        body: JSON.stringify({
+          interview_id: interviewId,
+          candidate_name: candidateName
+        }),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new ApiError(
+          errorData.detail || `Evaluation failed with status: ${response.status}`, 
+          response.status
+        );
+      }
+      
+      return await response.json();
     }
-    
-    return await response.json();
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;
@@ -206,36 +239,82 @@ export async function healthCheck(): Promise<{ status: string, dependencies?: Re
  */
 export async function getPastEvaluations(): Promise<EvaluationResult[]> {
   try {
-    const response = await fetch(`${API_BASE_URL}/evaluations`, {
-      headers: {
-        ...getAuthHeader()
+    // Determine which approach to use based on environment configuration
+    const useSupabaseDirect = import.meta.env.VITE_USE_SUPABASE_DIRECT === 'true';
+    
+    if (useSupabaseDirect) {
+      // Import supabase client on demand to avoid circular dependencies
+      const { default: supabase } = await import('./supabase');
+      
+      // Use Supabase client directly
+      const { data: evaluations, error } = await supabase
+        .from('evaluation_results')
+        .select(`
+          *,
+          interviews!evaluation_results_interview_id_fkey(candidate_name),
+          criteria_evaluations!criteria_evaluations_interview_id_fkey(*)
+        `)
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      
+      if (!evaluations || evaluations.length === 0) {
+        return [];
       }
-    });
-    
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new ApiError(
-        errorData.detail || `Failed to fetch evaluations: ${response.status}`, 
-        response.status
-      );
+      
+      // Map the Supabase response to our frontend model
+      return evaluations.map(eval => {
+        // Group criteria evaluations by interview
+        const criteriaEvals = eval.criteria_evaluations || [];
+        
+        return {
+          candidateName: eval.interviews?.candidate_name || 'Unknown',
+          overallScore: eval.overall_score,
+          criteria: criteriaEvals.map(criterion => ({
+            name: criterion.criterion_name,
+            score: criterion.score,
+            justification: criterion.justification,
+            supporting_quotes: criterion.supporting_quotes || []
+          })),
+          summary: eval.summary,
+          strengths: eval.strengths || [],
+          weaknesses: eval.weaknesses || [],
+          interview_id: eval.interview_id
+        };
+      });
+    } else {
+      // Use FastAPI backend (original implementation)
+      const response = await fetch(`${API_BASE_URL}/evaluations`, {
+        headers: {
+          ...getAuthHeader()
+        }
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new ApiError(
+          errorData.detail || `Failed to fetch evaluations: ${response.status}`, 
+          response.status
+        );
+      }
+      
+      const results = await response.json();
+      
+      return results.map((result: Record<string, unknown>) => ({
+        candidateName: result.candidate_name,
+        overallScore: result.overall_score,
+        criteria: result.criteria_evaluations.map((criterion: Record<string, unknown>) => ({
+          name: criterion.criterion,
+          score: criterion.score,
+          justification: criterion.justification,
+          supporting_quotes: criterion.supporting_quotes
+        })),
+        summary: result.summary,
+        strengths: result.strengths,
+        weaknesses: result.weaknesses,
+        interview_id: result.interview_id
+      }));
     }
-    
-    const results = await response.json();
-    
-    return results.map((result: Record<string, unknown>) => ({
-      candidateName: result.candidate_name,
-      overallScore: result.overall_score,
-      criteria: result.criteria_evaluations.map((criterion: Record<string, unknown>) => ({
-        name: criterion.criterion,
-        score: criterion.score,
-        justification: criterion.justification,
-        supporting_quotes: criterion.supporting_quotes
-      })),
-      summary: result.summary,
-      strengths: result.strengths,
-      weaknesses: result.weaknesses,
-      interview_id: result.interview_id
-    }));
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;
