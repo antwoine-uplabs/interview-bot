@@ -300,6 +300,7 @@ For the Interview Evaluator project, we're implementing LangSmith integration wi
 - Added environment variables for LangSmith configuration
 - Structured our LangGraph agent for proper tracing in `app/agents/evaluator/agent.py`
 - Designed evaluation criteria in `app/agents/evaluator/prompts/evaluation_prompts.py`
+- Created `langgraph.json` file in the project root for LangGraph deployment
 
 ### Deployment Plan
 

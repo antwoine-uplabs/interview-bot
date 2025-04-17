@@ -150,13 +150,11 @@ def create_evaluator_agent():
     
     # Enable LangSmith tracing if configured
     if os.environ.get("LANGSMITH_API_KEY") and os.environ.get("LANGSMITH_TRACING_V2", "").lower() == "true":
-        # In Sprint 3, we'll add proper LangSmith callbacks
-        # from langsmith.callbacks import LangSmithCallbackHandler
-        # langsmith_handler = LangSmithCallbackHandler(
-        #     project_name=os.environ.get("LANGSMITH_PROJECT", "interview-evaluator")
-        # )
-        # callbacks.append(langsmith_handler)
-        pass
+        from langsmith.callbacks import LangSmithCallbackHandler
+        langsmith_handler = LangSmithCallbackHandler(
+            project_name=os.environ.get("LANGSMITH_PROJECT", "interview-evaluator")
+        )
+        callbacks.append(langsmith_handler)
     
     # Compile the graph with configured callbacks
     return graph.compile(callbacks=callbacks if callbacks else None)

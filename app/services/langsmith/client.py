@@ -13,15 +13,8 @@ from typing import Any, Dict, List, Optional
 from langsmith import Client
 import langsmith
 
-# Mock the LangSmithCallbackHandler for testing
-class LangSmithCallbackHandler:
-    """Mock LangSmithCallbackHandler for testing."""
-    
-    def __init__(self, project_name=None, client=None, tags=None, run_name=None):
-        self.project_name = project_name
-        self.client = client
-        self.tags = tags or []
-        self.run_name = run_name
+# Import the real LangSmithCallbackHandler
+from langsmith.callbacks import LangSmithCallbackHandler
 
 logger = logging.getLogger(__name__)
 

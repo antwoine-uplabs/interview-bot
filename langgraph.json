@@ -1,0 +1,7 @@
+{
+  "module": "app.agents.evaluator.agent",
+  "function": "evaluator_agent",
+  "description": "Interview evaluation agent for assessing data science candidate skills",
+  "config_keys": ["OPENAI_API_KEY", "LANGSMITH_API_KEY"],
+  "requirements_file": "requirements.txt"
+}
