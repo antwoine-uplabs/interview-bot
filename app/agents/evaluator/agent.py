@@ -9,7 +9,8 @@ import logging
 from typing import Dict, List, Optional, Any
 import os
 
-from langgraph.graph import StateGraph, END
+from langgraph.graph import StateGraph
+from langgraph.constants import END
 from langchain_core.tracers import ConsoleCallbackHandler
 
 from app.agents.evaluator.state import InterviewEvaluationState, EvaluationStatus
