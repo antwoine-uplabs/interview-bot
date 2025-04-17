@@ -147,22 +147,8 @@ def create_evaluator_agent():
     
     graph.add_edge("store_results", "end")
     
-    # Configure tracing if enabled
-    callbacks = []
-    
-    # Add console tracing for development
-    if os.environ.get("DEBUG", "").lower() == "true":
-        callbacks.append(ConsoleCallbackHandler())
-    
-    # Enable LangSmith tracing if configured
-    if os.environ.get("LANGSMITH_API_KEY") and os.environ.get("LANGSMITH_TRACING_V2", "").lower() == "true":
-        callbacks.append(langsmith_service.get_callback_handler(
-            run_name="interview-evaluation",
-            tags=["evaluation"]
-        ))
-    
-    # Compile the graph with configured callbacks
-    return graph.compile(callbacks=callbacks if callbacks else None)
+    # Compile the graph without callbacks for local development
+    return graph.compile()
 
 
 # Singleton instance of the agent
