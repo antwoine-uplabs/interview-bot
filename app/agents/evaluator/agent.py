@@ -10,7 +10,6 @@ from typing import Dict, List, Optional, Any
 import os
 
 from langgraph.graph import StateGraph
-from langgraph.constants import END
 from langchain_core.tracers import ConsoleCallbackHandler
 
 from app.agents.evaluator.state import InterviewEvaluationState, EvaluationStatus
@@ -112,8 +111,14 @@ def create_evaluator_agent():
     graph.add_node("generate_summary", generate_summary_node)
     graph.add_node("store_results", store_results_node)
     
+    # Define end node function
+    def end_node(state: InterviewEvaluationState):
+        # This function will be called when the graph reaches the end state
+        logger.info(f"Evaluation workflow completed for interview {state.interview_id}")
+        return state
+        
     # Add the end node
-    graph.add_node("end", END)
+    graph.add_node("end", end_node)
     
     # Define the workflow edges
     graph.set_entry_point("extract_qa_pairs")
@@ -151,11 +156,10 @@ def create_evaluator_agent():
     
     # Enable LangSmith tracing if configured
     if os.environ.get("LANGSMITH_API_KEY") and os.environ.get("LANGSMITH_TRACING_V2", "").lower() == "true":
-        from langsmith.callbacks import LangSmithCallbackHandler
-        langsmith_handler = LangSmithCallbackHandler(
-            project_name=os.environ.get("LANGSMITH_PROJECT", "interview-evaluator")
-        )
-        callbacks.append(langsmith_handler)
+        callbacks.append(langsmith_service.get_callback_handler(
+            run_name="interview-evaluation",
+            tags=["evaluation"]
+        ))
     
     # Compile the graph with configured callbacks
     return graph.compile(callbacks=callbacks if callbacks else None)
