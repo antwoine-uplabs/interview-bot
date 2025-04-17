@@ -58,17 +58,19 @@ This document outlines the requirements for the AI Interview Evaluator applicati
 
 ## 5. Technical Architecture
 
--   **Frontend:** Node.js (Express/Next.js), Tailwind CSS, HTML.
+-   **Frontend:** ReactJS/TypeScript, Tailwind CSS, HTML.
 -   **Backend API:** Python (FastAPI).
 -   **AI/ML:**
-    -   Langchain/LangGraph (Agentic Workflow Orchestration).
+    -   LangGraph (Agentic Workflow Orchestration, deployed to LangChain Cloud).
     -   LlamaIndex (Transcript Parsing, Structured Data Extraction).
-    -   LLM (e.g., GPT-4, Claude 3 - configurable via Langchain).
+    -   LLM (GPT-4 with OpenAI API - configurable via Langchain).
+    -   LangSmith for monitoring and tracing (optional).
 -   **Database:** Supabase Postgres.
 -   **Authentication:** Supabase Auth.
 -   **Hosting:**
-    -   Frontend: Vercel / Netlify / Supabase Hosting.
-    -   Backend API: Render / Heroku / AWS EC2 / Google Cloud Run.
+    -   Frontend: Vercel.
+    -   LangGraph Agent: LangChain Cloud.
+    -   Backend API: Render / Heroku / Railway.
     -   Database/Auth: Supabase.
 
 ## 6. Data Model (Postgres)

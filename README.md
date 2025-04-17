@@ -29,7 +29,9 @@ A web application that evaluates data science interview transcripts using AI, pr
 - Supabase (Database, Authentication, Storage)
 - Supabase Edge Functions (Serverless)
 - OpenAI API for evaluation
+- LangGraph for agent orchestration
 - LangSmith for monitoring (optional)
+- Python FastAPI for API endpoints
 
 ## Getting Started
 
@@ -48,28 +50,45 @@ cd interview-bot
 
 2. Install dependencies:
 ```bash
+# Backend dependencies
+pip install -r requirements.txt
+
 # Frontend dependencies
 cd frontend
 npm install
+cd ..
 ```
 
 3. Set up environment variables:
 ```bash
+# Create backend .env file
+cp .env.example .env
+
 # Create frontend .env file
 cp frontend/.env.example frontend/.env.local
 ```
 
-4. Update environment variables in `.env.local` with your Supabase credentials and OpenAI API key.
+4. Update environment variables in both `.env` and `.env.local` with your Supabase credentials, OpenAI API key, and LangSmith API key (optional).
 
 ### Running Locally
 
-1. Start the frontend development server:
+1. Start the backend development server:
+```bash
+uvicorn app.main:app --reload --port 8000
+```
+
+2. Start the LangGraph development server:
+```bash
+langgraph dev
+```
+
+3. Start the frontend development server:
 ```bash
 cd frontend
 npm run dev
 ```
 
-2. The application will be available at http://localhost:5173/
+4. The application will be available at http://localhost:5173/ and the LangGraph studio at https://smith.langchain.com/studio/?baseUrl=http://localhost:8000
 
 ## Deployment
 
@@ -78,6 +97,31 @@ npm run dev
 2. Set the root directory to `/frontend`
 3. Configure environment variables
 4. Deploy!
+
+### LangGraph Agent (LangChain Cloud)
+1. Install the LangGraph CLI and authenticate:
+```bash
+pip install langgraph-cli
+langgraph login
+```
+
+2. Deploy the agent to LangChain Cloud:
+```bash
+langgraph deploy
+```
+
+3. Configure environment variables in LangChain Cloud dashboard:
+   - OPENAI_API_KEY
+   - LANGSMITH_API_KEY
+   - SUPABASE_URL
+   - SUPABASE_SERVICE_ROLE_KEY
+
+### Python Backend (Railway/Render/Heroku)
+1. Connect your repository to your chosen platform
+2. Configure the build command: `pip install -r requirements.txt`
+3. Configure the start command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+4. Set environment variables
+5. Deploy!
 
 ### Edge Functions (Supabase)
 1. Install Supabase CLI

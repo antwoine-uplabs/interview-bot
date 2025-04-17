@@ -9,8 +9,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # Install dependencies
 pip install -r requirements.txt
 
-# Run development server
+# Run FastAPI development server
 uvicorn app.main:app --reload --port 8000
+
+# Run LangGraph development server
+langgraph dev
+
+# Deploy LangGraph to LangChain Cloud
+langgraph deploy
 
 # Code formatting
 black app/
@@ -55,9 +61,14 @@ npm run build   # Type check and build
 - `app/models`: Data models and schema definitions
 - `app/services`: Business logic and external integrations
 - `app/agents`: LangGraph agents for evaluation
+  - `app/agents/evaluator`: LangGraph agent for transcript evaluation
+  - `app/agents/evaluator/nodes`: Individual nodes for the LangGraph workflow
+  - `app/agents/evaluator/prompts`: Prompt templates for the evaluation
+  - `app/agents/evaluator/state`: State definitions for the LangGraph agent
 - `app/utils`: Utility functions
 - `frontend/src/components`: React components
 - `frontend/src/services`: API client and services
+- `langgraph.json`: LangGraph configuration for cloud deployment
 
 ## Process
 - Check sprint docs in /docs/process/phase-eval/ for requirements
@@ -69,3 +80,14 @@ npm run build   # Type check and build
 - When you find an error and find a fix, make a note of the mistake and fix in claude.md under the known issues heading
 
 ## Known Issues
+
+### LangGraph Configuration
+- The `langgraph.json` file requires specific formatting for cloud deployment:
+  - The graph path format must be a string with module:function pattern
+  - The `env` property must be at the root level of the configuration
+  - The `dependencies` field must include the project root (usually ["."])
+  - The END node must be a function, not a constant
+
+### Development Environment
+- For local testing, use custom mock services for Supabase and LangSmith to avoid external service dependencies
+- When using `langgraph dev`, a fixed port must be specified to avoid conflicts
