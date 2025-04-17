@@ -1,0 +1,82 @@
+Interviewer: Hi there! Thanks for joining us today. Could you start by telling me a bit about your background in data science?
+
+Candidate: Hello, thank you for having me. I've been working in data science for about 4 years now. I completed my Master's in Statistics and then joined a fintech startup where I built credit risk models. More recently, I've been at a larger tech company working on recommendation systems.
+
+Interviewer: That sounds like great experience. Let's dive into some technical questions. Could you explain how you would approach a classification problem where you have imbalanced classes?
+
+Candidate: Sure. When dealing with imbalanced classes, there are several approaches I typically consider. First, I evaluate if resampling techniques would be appropriate - either undersampling the majority class or oversampling the minority class using methods like SMOTE. I might also use class weights to penalize misclassification of the minority class more heavily. For evaluation, I'd avoid just using accuracy and instead focus on metrics like precision, recall, F1-score, or area under the ROC curve since they better represent performance on imbalanced data. If the problem allows, I might also consider ensemble methods or anomaly detection approaches depending on how extreme the imbalance is.
+
+Interviewer: Great answer. Now let's talk about SQL. How would you write a query to find the top 5 customers by total purchase amount?
+
+Candidate: I'd approach it this way:
+
+```sql
+SELECT 
+    customer_id,
+    customer_name,
+    SUM(purchase_amount) as total_purchases
+FROM 
+    transactions
+JOIN
+    customers ON transactions.customer_id = customers.id
+GROUP BY 
+    customer_id, customer_name
+ORDER BY 
+    total_purchases DESC
+LIMIT 5;
+```
+
+This assumes we have a transactions table with purchase_amount and customer_id columns, and a customers table with id and customer_name columns. We're joining these tables, grouping by customer, summing up their purchases, ordering by that sum in descending order, and limiting to the top 5 results.
+
+Interviewer: Perfect. Let's move on to Python. Could you explain how you would handle missing data in a pandas DataFrame?
+
+Candidate: There are several approaches I use for handling missing data in pandas:
+
+First, I'd start by understanding the extent of missing data with df.isnull().sum() to see how many values are missing in each column.
+
+For handling missing values, I might:
+1. Drop rows with missing values using dropna() if the missing data is minimal
+2. Fill missing values with statistical measures like mean, median, or mode using fillna() 
+3. Use forward-fill or backward-fill with methods like ffill() or bfill() for time series data
+4. Apply more sophisticated imputation techniques like KNN or regression imputation for more complex datasets
+5. In some cases, I might create a binary "is_missing" feature if the missingness itself might be informative
+
+The approach depends on the data context, the proportion of missing values, and the importance of the features with missing data.
+
+Interviewer: Excellent. Now for a statistical question. Can you explain what p-values are and some common misinterpretations of them?
+
+Candidate: A p-value represents the probability of obtaining results at least as extreme as the observed results, assuming the null hypothesis is true. It's essentially a measure of the evidence against the null hypothesis.
+
+Common misinterpretations include:
+1. Thinking p-value is the probability that the null hypothesis is true - it's not
+2. Believing a small p-value means a large effect size or practical significance
+3. Interpreting a non-significant p-value as proof the null hypothesis is true, rather than insufficient evidence to reject it
+4. Using arbitrary thresholds like 0.05 without considering the context
+5. Failing to account for multiple testing problems when many hypotheses are tested simultaneously
+
+It's important to remember that p-values should be just one part of a broader statistical analysis, considered alongside effect sizes, confidence intervals, and domain knowledge.
+
+Interviewer: Great explanation. Let's move to machine learning. How would you explain the difference between a decision tree and a random forest to a non-technical person?
+
+Candidate: I'd explain it this way: Imagine you have a big decision to make, like buying a house. A decision tree is like asking one expert who uses a strict set of rules to help you decide: "If the price is above X, say no. If it's in this neighborhood, say yes," and so on, following a tree-like structure of yes/no questions.
+
+A random forest, on the other hand, is like asking 100 different experts for their opinion, where each expert considers a slightly different set of factors about the house and may use different decision rules. Then you take a vote among all these experts to make your final decision.
+
+The single expert (decision tree) might be really good, but they could also have blind spots or biases in their decision process. By consulting many experts (random forest) who each look at the problem slightly differently, you're more likely to get a balanced, accurate recommendation that isn't overly influenced by any single perspective or unusual aspect of the data.
+
+Interviewer: That's an excellent analogy! Finally, could you tell me about a challenging data science project you worked on and how you approached it?
+
+Candidate: One challenging project was building a customer churn prediction model for a subscription service. What made it difficult was that we had very imbalanced data (only about 5% churn rate), limited historical data, and the churn patterns were constantly evolving due to product changes.
+
+My approach was multi-faceted:
+1. I created a robust validation framework using time-based splits to properly evaluate performance on future data
+2. I engineered features that captured behavioral changes over time, not just snapshots
+3. I implemented a stacked ensemble model that combined gradient boosting, logistic regression, and a neural network
+4. For deployment, I built an explainable model dashboard so the business teams could understand the key churn drivers
+5. I designed the system to retrain automatically monthly to adapt to changing patterns
+
+The results were impressive - we increased churn prediction accuracy by 37% compared to the previous model, and the business was able to implement targeted retention programs that reduced churn by about 14% over six months, saving approximately $3M in annual recurring revenue.
+
+Interviewer: That's very impressive! Thank you for sharing all of these insights. Do you have any questions for me about the role or the company?
+
+Candidate: Yes, I'd love to know more about how the data science team is structured and what some of the biggest challenges are that the team is currently tackling?

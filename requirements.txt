@@ -1,0 +1,30 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+pydantic>=2.0.0
+python-multipart
+
+# Database and storage
+supabase
+
+# LLM frameworks
+llama-index
+langchain
+langgraph
+
+# LangSmith for monitoring and evaluation
+langsmith
+
+# LLM providers (uncomment as needed)
+openai
+# anthropic
+# cohere
+
+# Provider integrations
+llama-index-llms-openai
+langchain-openai
+
+# Testing and development
+pytest
+black
+isort 

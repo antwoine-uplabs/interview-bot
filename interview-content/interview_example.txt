@@ -1,0 +1,485 @@
+Antwoine Flowers
+Examples of venture studios out there that are very successful. But one of the unique things about this group is that it's, it's essentially a bunch of guys that came out of BCG DV and they were really successful at finding some core problems within large organizations. But the problem is then they hand those companies over to the organization and it always falls flat upon launch because a big corp doesn't know how to raise a startup right. If it's like if it's not. Prof. First they go put some like VP in charge that doesn't know what he's doing and he's just going to try to grow a huge organization and the things not. Prof. It's just a bad model. And so they left and said, well, what if instead of doing that we went and hired top tier CEOs to run the companies and we took equity? Voila. Right? Magic. Except not so much. There's always friction points that you hit and we're growing up as we go through it. And then this vertical AI thing happened and what we realized was that OpenAI Google, you're never going to beat them in building a foundation model because they have the entire Internet. But these industries have petabytes of data that they literally can't unlock. And even if they hired a team to unlock it, they would only unlock the value for themselves. What we allow those companies to do is unlock that value across the entire industry and then profit from it. So that's sort of the use case or business model. And the way we work is we have the lab or the studio. And each studio has a lab associated with the venture partner. So right now we have like Alaska Airlines, I'm on Wabash Venture Labs, we have JB Hunt, which is what you're interviewing for. And each of these teams has what we call like a venture builder, which is like a head of product role, a head of engineering, cto. Depends. Like these nomenclatures don't really mean much. And up until recently, none of them had, none of them really had a DS lead. But then as they started building more DS businesses and AI businesses, they realized they actually needed more of that expertise in real life. So this interview is going to be different from like, you know, I'm ex Google, ex coinbase, ex finance industry. Like I. All of those interviews are like, explain to me the nitty gritty of how you train a model and why you transform this variable. Our job is slightly different, right? Our job is to. To really understand how to translate business problems into data science problems and then solve those data science problems at a high level. So you're, you're a founding engineer on every, on every company that you start and to give you an idea to scope. Part of the reason I'm exhausted is because like right now I'm head of data science across three startups. That's the reality of our model, right? We build two companies at a time and sometimes you get thrown on another project. And so I have next week officially I'll have what, six people up under me, give or take depending on how many contractors we hire. And then we have our dev code studio which is our latam resources. So that's where we hire most of our like ML engineers, senior data scientists that work for us. So yeah, you're basically interviewing to be my peer and that's what the reality of, of the gig is. I just want to level set there so that we can sort of get into the groove of the interview a little bit. Not. And I can get you out of. Because where a lot of people mess up in this interview is like they keep trying to give me the textbook answer and I don't, I don't at this point you can chat GPT like the right way to do a linear regression. Like it's not that hard. Like what I really want to know, especially from you is like, can you get out of that Northrop mindset? Like I got guys that worked in defense and worked in these very big companies for a very long time and it's just like, it's a little, we get a little heebie jeebies when we see that. 
+
+Abhishek Paul
+So I will say one caveat. I don't think I'm your typical Northrop mindset because just like as you said on what's it called, like every project that I've done, it's that I've set up on what's called especially in aiml. I've pitched it, I've identified the problem going from zero that hey, this is the current state, this is how we do it. I put together the business proposal, I put together, this is how much funding would be, this is how we get it to the mvp, this is how we validate it. This is what's called. Once this is successful, this would be the game time and the roadmap to implement it in the actual process. And just like, so I've done like multiple projects where what's. And creating different solutions in different sections all at once and leading different teams too. So in terms of your typical Northrop, like, fall in line, do what you told, etc. That's not me. And that was not my career. All right. 
+
+Antwoine Flowers
+I mean, y'all still ain't shipping, but that's cool. Yeah. You're not. You're not Andrew, you know. 
+
+Abhishek Paul
+Yeah, that's that. So a lot of the people I've worked with left to go, the innovative people left to go to Andrew, and some of them have talked to me. But anyway, yes, you're right. You're completely correct. 
+
+Antwoine Flowers
+We love Andrew. I put something in the chat, so let's get the boring part out of the way first. This is going to be a two part interview. That's why it's so long. We were trying to shorten it and just get. Get it all kind of done. And then there was this back and forth. Do we give senior people coding exams? Do we not give them coding exams? You're not going to fail this interview based on this coding exam. It's just like a basic, like screen. So can you see it in coderpad? 
+
+Abhishek Paul
+Yeah, I'm just signing in right now. 
+
+Antwoine Flowers
+Yeah, yeah, go ahead and log into that. And we gonna spend maybe 15 minutes going through this and then from there we're gonna get into the meat and potatoes of the, of the interview. We got 90 minutes, so we should be fine. All right. Yeah. Gold design a parking lot using object oriented principles. Funny, right? Like, really interesting. So obviously we want a class here, right? Let's talk about why I chose this, like translating these sort of entities into code. Especially when, like, I'm creating a class right now for like, problems worth solving. It's a way that we work in the lab and we're trying to automate our workflow and just translating these problems and entities and ideas into classes and then shipping that off to the engineering team to automate some of these things is something we do. Walk me through your process. Talk me through your process. And then you got the AI assist over here. If there's some specifics about Python classes you don't remember, like how, how to write a try except flow or something like that should be in your top, right? You should see something that says AI assist. 
+
+Abhishek Paul
+Okay, got it. Good to know. 
+
+Antwoine Flowers
+So, you know, once again, I'm not, I'm not interviewing you on your, your encyclopedic, definite definition or knowledge of Python P. But more so can you think programmatically? We do write code and we do ship. That's the other thing about being lead here. Like I got cursor on my other screen over here, like building out lane graph models. So like. 
+
+Abhishek Paul
+Yeah, so in regards to this is when you're saying goals in terms of designing a parking lot using object oriented principles, are we gonna. Is this algorithm going to take in like an image or data that has a parking lot and then imagine a Python class, Right. 
+
+Antwoine Flowers
+And so you can instantiate parking lot. And then when you instantiate something, you may give it certain presets, like. Spaces equals 50 spaces. And then you might need a method saying space taken or space added. Imagine that you pull into a parking lot, underground parking lot, and there's a Python class on the inside of that, determining how many spaces have been taken, is it full yet, is it empty, etc. Etc. It's just testing your object oriented design and your class design. 
+
+Abhishek Paul
+Gotcha. So your core classes would be your, well, your base classes, your parking spot. Then you have subclasses and the type of parking spot it would be. Is it like a handicap spot? A car spot, a motorcycle spot? And then you have your other class in terms of the vehicles. 
+
+Antwoine Flowers
+Yeah, I mean, you could do. I mean, you don't really need a class for a vehicle. I wouldn't, I would just keep it simple. I would just do a single class, instantiate it with some characteristics about that parking lot and then some methods that allow you to pop in and out. So these are like some of your basic list or index kind of work. So if you instantiate a list and somebody comes in, how do you then change the state of the class to say, now we only have 57 parking spots because somebody came in, et cetera, et cetera. So that's what I mean. 
+
+Abhishek Paul
+Gotcha, gotcha. Okay, sounds good. 
+
+Antwoine Flowers
+Take your time, think through it. Don't rush, like, ask, ask any questions you need to ask, bro. 
+
+Abhishek Paul
+Okay, sounds good. And then can I use, like, can I use CHAT GPT for this or is you looking. 
+
+Antwoine Flowers
+Use the AI assist we got in here. 
+
+Abhishek Paul
+Okay, got it. 
+
+Antwoine Flowers
+Yeah, I think, I think it is Chad GPT, but just so that I can see, because like, you obviously don't want you. I don't want you to drop the whole question in there, but if you have some specific questions about, you know, classes or whatever. 
+
+Abhishek Paul
+Gotcha, gotcha. 
+
+Antwoine Flowers
+Where does my INIT go? It's like, go ahead. 
+
+Abhishek Paul
+Okay, sounds good. Yeah. And I will say, what's it called? Just straight up, what's it called in terms of coding? That's probably where I'm like, in like straight up coding without, like how I did coding before chatgpt, just being straight up. When I built models, I built MVPs, but I'm not a software developer. But I would build out the pseudocode. Like I can do the data analysis, do all that stuff, but when it's time to actually build a code, I would build a pseudocode and then I translate it from the pseudocode, then do that. 
+
+Antwoine Flowers
+Like if you can get it done, get it done, Write the pseudocode out and then see if ChatGPT can put it together for you. 
+
+Abhishek Paul
+Okay. 
+
+Antwoine Flowers
+But yeah, I do not care how you get it done, just done correctly. 
+
+Abhishek Paul
+Sounds good. Design a parking lot house how many spots. Angle. 
+
+Antwoine Flowers
+Are you writing the pseudocode out in the. The monitor here? Ah, right in here, man. Like it's an interview. I gotta see it. What you think, what you. How you approaching it. 
+
+Abhishek Paul
+Got it, got it. All right. So, yeah, I'm just going through the assumptions. What's it called to figure out in terms of the problem? So I'm looking. So obviously you have to create some classes. The class would be to like looking at this. So for the vehicles, class for the parking spot, then the parking spot, it has like a regular spot. Like the car can be a regular spot or a large spot. Then just different key aspects in terms of like, what can happen with it. If the park is occupied and not occupied, then give a Boolean. True or false, Then just. Yeah, it's going through the different things here. So creating the class with a parking spot, then we're gonna have to create a class for ultimately the parking lot. And then in the parking lot, then it just like we have to have. Just like the different key aspects of the questions that the methods will need to run. And so then that will go into the parking lot and that will be like we'll have to create def function for the different spots. How many total spots when it's full? If it's empty, tell us like the certain spots when the spots are full and then tell us how many spots are the van are being taken up. 
+
+Antwoine Flowers
+Now let's get into a little bit of detail, into the actual functionality. Let's get into a little bit of detail. We have a class. Let's talk about the parking lot class itself. How do you anticipate this working? We need some methods. We need to create and define some methods. What are we going to initialize this class with? Like when we start the class, what information do we have to put in in order to initiate initialize a parking lot object? 
+
+Abhishek Paul
+So you'd probably use the cell function and then what's called cell function will then have just the different functions underneath. Yeah. 
+
+Antwoine Flowers
+Well, I'm asking like what, what are the things. We got it. We're going to initialize it with like. So we're going to do self dot what giving your pseudocode. Right. Like walk me through in your mind how it, how this comes together. 
+
+Abhishek Paul
+Yeah, this is probably where I'm the weakest. Yeah. So what's called in regards to this, the self. It's. It's going to be ultimately based. Let's see. 
+
+Antwoine Flowers
+So let's back up. So we got a class that is a parking lot. The cool thing about classes is that they can contain both data methods that can act on that data. So based on the requirements here, what data do we think we need to define what a parking lot is? Just based on what we're seeing in here. 
+
+Abhishek Paul
+Yep. So we're going to have to have your so spots, like motorcycle spots, car spots, and then van spots. Because those are your different, what's it called function. Like these are your. What's in the space of the parking lot. 
+
+Antwoine Flowers
+Right. So we have three different vehicles. Right. And each of those vehicles you can have a motorcycle, car, van. So I heard you say you're going to have two different classes. You're going to have a class for a vehicle, you're going to have a class for parking lot. I like that idea. Okay. And then within the classes, within the. The vehicle class, it sounds like you're going to acknowledge that there are three different spots. Okay. 
+
+Abhishek Paul
+Yep. 
+
+Antwoine Flowers
+Now within the parking lot, like you just said, you then have to initialize it with how many motorcycle spots, it has car spots. Or parking spots, Right? 
+
+Abhishek Paul
+Yep. 
+
+Antwoine Flowers
+Okay, so let's just. Let's just do that. Let's just see if we can get. However you want to write the code. If you want to write it, you want to have AI write it. Let's just see if we can get that basic class done. 
+
+Abhishek Paul
+Okay. I mean, yeah, I would just start off here, so I'm just going to do it from here. Oh, well, you don't want me. This is odd to be able to do this in interview. I mean. Okay, what's this? 
+
+Antwoine Flowers
+Feels like cheating, right? But don't worry, like it's different. 
+
+Abhishek Paul
+Can't put the whole thing in here. But yeah, it's interesting. 
+
+Antwoine Flowers
+Give it your. I mean, give it, give it your pseudocode. Right. You kind of have defined what it is you wanted to do, so provided the pseudocode. Do you see the AI Assist tab in here that you have? 
+
+Abhishek Paul
+Yeah. 
+
+Antwoine Flowers
+Okay. It. Do you have a preferred language? I didn't even ask. I assumed it was Python, but it might not. 
+
+Abhishek Paul
+Yeah, it's Python. I've done. Yeah, most I've done like Matlab R, but it's maple and mace. And I've done C, but mainly Python. It. 
+
+Antwoine Flowers
+So let's go, let's go through this. Let's go through the, the code that it, that it produced. Let's just go through the vehicle code. Does that look like what you want? 
+
+Abhishek Paul
+No, because I mean so we're gonna have to change that up because in the vehicle. Oh, I mean we've self. And then we're probably going to have just a vehicle type. We don't need the license plate based off of the prompt that we need. So we can get rid of everything in the license plate. 
+
+Antwoine Flowers
+Yep. 
+
+Abhishek Paul
+And then let's see. Yeah, then we can get rid of this here. So in the parking lot now. So then we have here there's going to be the parking spot and in parking lot to help with the answer the different questions. That's in the assumptions that's needed. But we talked about the parking lot. So I can go here. Well either one if you want. But this is. Then it's like the spot type and then I gotta go and go back to the assumptions and just double check and like update based off of the different key assumptions and go through line by line for the different spots. Like if it's like. Yeah. 
+
+Antwoine Flowers
+Anyways, let's go through the parking spot class and how it defined it real quick. Okay, walk me through the logic of like what is what it's doing here? 
+
+Abhishek Paul
+Okay. Parking spot. This one it's going through. So we have self. So numbered vehicle. So it's expecting a number to be an integer. And so here then we have park vehicle. If. So this is going to give a number that tells you what spot it's in. So that's what that's. This function is going to give you. So it's going to give you a number and then it's going to give you a print statement in terms of if it's already occupied. Next up we have so. 
+
+Antwoine Flowers
+So first is going to instantiate basically however many spots it says. And then up in the parking spot it's going to initialize a number and a vehicle and that vehicle is going to be none. Right. And so it looks like it's giving you the state of the parking spot. And then parking lot is going to contain vehicles and spots. Okay, so continue. 
+
+Abhishek Paul
+Okay, and so next up we have definition function here. Remove vehicle. Guess it's a function to remove a vehicle. And then if there's no vehicle. There it will give you a print function that tells you that there's no vehicle to remove from the spot and then another function to tell you if the spot's occupied. So. Interesting. Okay. At least that's what. But I don't think this is, this is needed for what the instructions are, so I just have to update that accordingly. So, yeah, I can, I mean, based off of this, I mean, I can just write it based off of those instructions. 
+
+Antwoine Flowers
+Yeah, so I'm more, at this, at this point, I'm more interested in kind of you breaking down what this, what this thing did right, what it did wrong, and like where you might improve your instructions next time just based on what you got here. Because it took a lot of liberties. 
+
+Abhishek Paul
+Yeah, it did. So what I just wrote here was, can you give me an object oriented code to create a class for vehicle Parking spot, parking lot. This is in a parking lot answer questions for what type of vehicles are in the parking lot. I mean, so I didn't go as in depth in here, but there's different prompt structure that you can utilize to optimize the prompt for the specific task at hand. Obviously, say as a user Persona, you're doing this. This is information that we need. These are the key assumptions and what's called, and these are the types of questions that will get. Those are different prompts you can get answered. That's if I can try that. Like, I didn't want to go. All that would give you more exact answer. This was just to get like some base code just so I could start with like the class initiate and then just like start it based off of that. 
+
+Antwoine Flowers
+Okay. 
+
+Abhishek Paul
+Yeah. So I mean, how I utilize like it nowadays, it's just like, yeah, so I mean, I can do it how I do it. Normally that just answer the question. 
+
+Antwoine Flowers
+Yeah, I think the issue here is not the prompt structure as much as it is if you had given it declarative pseudocode that was like, hey, these are the three classes I want you to create. Class one initializes with this. It has a method that does this. It has a method that does that code method. It would have been more structured and what it gave you. Walk me through what this list vehicles, list vehicle types function is doing here. 
+
+Abhishek Paul
+Got it. So list vehicles type. It's running a for function. It's going to do a for loop and spot. That's basically going to go and check for all the spots that if the spot is occupied, it's going to then run another if function that's going to go and check for the vehicle type. Then it's going to go and check for the vehicle type in a list of vehicle types. 
+
+Antwoine Flowers
+And where's that list coming from? 
+
+Abhishek Paul
+Vehicle types. Let's see. Oh, the vehicle types is right here. This gets instantiated over here. 
+
+Antwoine Flowers
+Oh, I can't see your screen. 
+
+Abhishek Paul
+Oh, there's this vehicle types a colon. It's just like in the after function. Oh, you can't see it. Oh, okay. Can I share my screen? 
+
+Antwoine Flowers
+Yeah, just. Yeah, just point. Point me to it. So in vehicle types is getting instantiated where like. And where is it inheriting that information from is what I'm asking. 
+
+Abhishek Paul
+Oh, it's inheriting the information from the spot function. 
+
+Antwoine Flowers
+So it's where's the spot function? 
+
+Abhishek Paul
+So self spots. See, this is where vibe coding isn't always the best. Let's see. 
+
+Antwoine Flowers
+I know, right? One tiny mistake and save 70 lines of code tends to cost you a little bit more time. 
+
+Abhishek Paul
+Cool. 
+
+Antwoine Flowers
+Yeah, don't worry about it. It's inheriting it from the vehicle class, which is inheriting from the parking spot class. So the spots, one by one, we have a list comprehension here. We're creating a list of all the spots, and the spots that it's actually referring to are the parking spots. Parking spot. I. It's instantiating each one of the individual parking spots in the list that you're giving it and it's creating a list of those. And then when you click on that spot vehicle, if you go up to class parking spot, it has that vehicle selected right there. That's what it's actually pulling from because that's an attribute of that parking spot class. And then it's pulling vehicle type from vehicle from the vehicle class. So it's actually going three classes deep in order to do this. A little bit of a pain in the ass and over complicated. Like I, I probably wouldn't have done it that way, but that's where that spot vehicle dot vehicle type is coming from. And essentially what this is trying to do is tell you how many vehicles are in which vehicle spots, but it's not telling you which of those spots is actually being taken up by a spot for that vehicle. So it got you a little bit of the way there, but, but not all the way. So little bit more of a detail prompt would have, would have, would have helped you out. Move on to a part of the interview I hope you can kill. 
+
+Abhishek Paul
+Okay. 
+
+Antwoine Flowers
+Okay, Give me one sec to share something with you. 
+
+Abhishek Paul
+Do you want me to take the survey now or later? 
+
+Antwoine Flowers
+I don't care. 
+
+Abhishek Paul
+Yeah. 
+
+Antwoine Flowers
+Okay, make a copy. Where are you based? 
+
+Abhishek Paul
+I'm in la. I'm CB City Palms. 
+
+Antwoine Flowers
+Oh, you're right around the street, Right around the corner. I'm in Playa. Playa Vista. Copy link. 
+
+Abhishek Paul
+So I will say one thing. If I do get this role and I do take it, what's it called, and this is something we need to do. I just haven't done this because I've had software engine engineers that's done with these aspects. I've been the one that created the prototype. But if this is something that's needed, I can definitely get up to speed and do this. I've just, I haven't been hardcore coding about a year, two years when I. Outside of building prototypes because I've been in corporate. 
+
+Antwoine Flowers
+Yeah. I mean, and that's the, that's the thing. Right. So like my role right before this is like I was founding data scientists at a startup and it's just, it's not, it's not, it's not a judgment. It's just like I was building Full Stack for like two years. Right. So when we get here, a lot of the times, you know, we'll have some DSS up under us. But the reality is if we can't look at their code and be like, yeah, this is. This isn't. We got six months to go. I have six months to build three companies. Right. Like, the timelines, the attitudes, and the sizes of the teams are completely different from what you're used to. Can you get up to speed? I'm almost certain that you can. Right, but it's like you're going up against candidates who maybe are already in that vibe. 
+
+Abhishek Paul
+Yeah, that makes sense. But. 
+
+Antwoine Flowers
+But you have a chance. It is not over. I. I just shared a doc with you. 
+
+Abhishek Paul
+Okay. Yep, I see the doc. 
+
+Antwoine Flowers
+So now it's choose your own adventure. 
+
+Abhishek Paul
+Okay. 
+
+Antwoine Flowers
+Gonna play some data science games. So this might be a little bit more up your alley. We got four scenarios. We're gonna walk through and build out these scenarios in depth, but you get to choose which scenario we go to. So if I were you, I would choose the one that you have the most experience with. Take a second, take a breath. Shake off the coding shit. We don't fail people over coding exams. Shake it off. Get your. Get your head back together, and let's get into this next phase. 
+
+Abhishek Paul
+Okay. Okay. Let's see. Yeah. One is the optimization problem. Two is the A&B testing problem. Three. Yeah. Customer retention in regards to. To customer churn. So it's building a customer churn model. If, like, they'll churn, they won't churn based off of historical data. 
+
+Antwoine Flowers
+So you want to do the customer retention? 
+
+Abhishek Paul
+Sure. Yeah. Let's do the customer retention one. 
+
+Antwoine Flowers
+Customer retention. Cool. Let's get it. Okay. Oh man, this cold is kicking my butt. Okay, this is my favorite part. A subscription based streaming service wants to understand what factors truly cost customer churn and design targeted interventions to improve retention. They have detailed user interaction data, content viewing history, customer service interactions, billing data and limited demographic information. The business needs to move beyond correlation to identify causal factors they can influence. Take a second, I want to discuss, I want you to repeat back to me what the problem is and then just think as like you're a founding data scientist, right. Like this is your company. What are the key challenges that you're going to have in solving this problem? 
+
+Abhishek Paul
+Yep. Okay. So okay, so yeah, ultimately the problem here is the subscription based streaming service ultimately wants to understand what factors will cause customer churn and then design target interventions. So things that they can apply into their streaming service business that they can improve retention on. We know what type of data that they currently have. They currently have detailed user interaction data, content viewing history data, customer service interactions, billing and limited demographic information. But so one of the key problems here is they don't want just correlation in terms of the key features that is correlated. They want cause causal factors which they can influence and causal factors is a little bit more complicated within correlations and yeah, so that's going to be one of the key challenges there and also understanding what is their time frame that they're looking to do. So one thing we don't know here in terms of the the detailed data that we have is the quality of the data, the timeframe of the data in regards to everything here. We don't know the retention type of data here as well. We know like the customer if they like their interaction data, the content viewing data, interactions. But it doesn't seem like we know if they've left. We don't have information on why they've left, if they've done any post surveys from any user sets left. So we don't know if we have that type of data at the moment. So that's probably going to be a potential issue here. But that's something questions to potentially ask the business as you move forward. But ultimately looking into this. The model that we want to do is build out a model. Well, factors. Yeah. So they want. We want to build a causal model on what's called to figure out what factors will cause customer churn based off of the data that they have. If they do have customer churn data in terms of churned and retained, that's going to be important. And then we're going to then need to design target interventions to improve retention. So we'll need to understand the cogal factors for churn and then have discussions with the subject matter experts and then also in regards to. Oh yeah, subject matter experts and then also understand the data in terms of the types of. Understand the correlations for the features and see where we can come up with and what's the endpoint there and then see what, what's next step in terms of causal inference. I'm not an expert there but what's it called? That's something I can go on what's called research on. And specifically with causal inference. I know there's a whole. I've taken some like I've done some self study on it but off top of my head I don't know if like that's something I'd have to do research, look at a textbook and go from there. 
+
+Antwoine Flowers
+Okay, so here's the challenge. This is a causal inference focused question. So I'll give you the ability to back out and do another one because every question after this is causal inference. 
+
+Abhishek Paul
+Gotcha. 
+
+Antwoine Flowers
+Okay, let's back out. I don't even want to set you up for failure. 
+
+Abhishek Paul
+I appreciate that, thank you. 
+
+Antwoine Flowers
+So we got statistical testing, we got a statistical testing one which is the experimentation focused. We have machine learning focused and we have product analytics focused. If you don't want to do the causal inference, you can pick one of those three. 
+
+Abhishek Paul
+Let's do. So the top one is that optimization of machine learning. 
+
+Antwoine Flowers
+The top one is machine learning. Same difference. You can. 
+
+Abhishek Paul
+Because I've taken like I've taken operations research and that's a little bit more complex. Like I've taken it. I've done well in that class. But like operations research in terms of like the traveling sales problem and like machine learning is a little bit different to me. 
+
+Antwoine Flowers
+Yeah. 
+
+Abhishek Paul
+So what's it called? And there's a lot of key aspects. What's called specifically for that. But product analytics is probably something I can do probably easily off the top of my head. I could do machine learning and do those types of off top of my head. But operations research I probably couldn't do off the top of my head, I could definitely do problems, but that's something. I do have to look into it and then build it out accordingly. And then you said, what was the other one? The other one was statistical testing. So hypothesis A and B. Testing. Yeah, that's your hypothesis testing, et cetera. So, I mean, I could probably do that one. 
+
+Antwoine Flowers
+So pick one. It sounds like you're between statistical testing and product analytics. 
+
+Abhishek Paul
+What's, what do we need to do in the product analytics and the next questions 
+
+Antwoine Flowers
+we're going to be doing a deep dive into standing them up. So this one, an E commerce platform needs to build a comprehensive analytics system and you'll be going into defining data models, developing KPIs, standing up exploratory analyses, developing analytics solutions. 
+
+Abhishek Paul
+Oh, okay, that's, that's probably the easiest, but yeah, I, I can do that one. That's, that's pretty straightforward. 
+
+Antwoine Flowers
+All right, let's switch these out. All right. A rapidly growing E commerce platform needs to build a comprehensive analytics system that provides actionable insights to multiple stakeholders across businesses. And I want you to read this like you are building a rapidly growing E commerce platform that needs to build a comprehensive analytics system that provides actionable insights to multiple stakeholders across the business. The platform needs to integrate data from website interactions, mobile usage, marketing campaigns, inventory management and customer service. Oh, and fulfillment operations. The solution must deliver self service analytics for business users while supporting deeper analysis by the data science team. Okay, okay, so we're going to dive into this one and so what additional information would be helpful for you to better understand this scenario? 
+
+Abhishek Paul
+First would be who are the key stakeholders across the business that this would provide actual insights to? The next one would be what's the current state? How is the analytics currently being completed? Is analytics being completed? If so, what are the key KPIs that the key stakeholders currently care about? Or is this some like, where is it in its technology, like readiness levels? The other stuff would be. Yeah, let's see. 
+
+Antwoine Flowers
+Okay, I'm gonna flip this, I'm gonna flip this on his head a little bit. Okay, you are. On a founding team, as the founding data scientists, you have a head of product ahead of business and growth and ahead of engineering. And you are building an E commerce platform. Your platform currently has 2 million active users and 50,000 products across 10 categories. So you have a mix of first party sellers and third party seller products. Right? So first party products are products that you directly list and procure. Third party sellers are like marketplace. So you're building sort of a Amazon competitor. Right. You're growing at 30% year over year. Okay, take a step back into your founder hat and you tell me what metrics or analytics for a platform like that you would be looking at and you think were important. 
+
+Abhishek Paul
+Okay, let me just reiterate if I understood everything. So, okay, on my team I have a head of product. Who else do I have? 
+
+Antwoine Flowers
+You got a head of engineering and you got a head of business and growth. That's your salesperson, that's the person going out there closing more deals, getting more third party sellers. 
+
+Abhishek Paul
+Okay? And right now there's for this E commerce product, we have 2 million active users and the goal is to grow the active users 30% year over year. Is that correct? 
+
+Antwoine Flowers
+You are currently growing 30 year old. 
+
+Abhishek Paul
+Currently. 
+
+Antwoine Flowers
+Okay, yeah, yeah. You're currently growing 30 year over year. Right. Okay, sorry about that. Hold on one second. You need to scale the analytics solution to handle the rapid business growth. You need to bat. You need to. Sorry. You need to balance standardized reporting with ad hoc analytical needs. Everybody's coming to you asking for data. You're the data guy. 
+
+Abhishek Paul
+Okay. 
+
+Antwoine Flowers
+Right. But you got a small team. They can't, they can't keep doing the, the ad hoc stuff. You gotta stand something up. You gotta figure out what metrics matter to this business and how to deliver them. And then you gotta figure out how to institute them. 
+
+Abhishek Paul
+Okay? Yep. So what's it called? So with this, if I'm understanding correctly, please correct me if I'm wrong, ultimately I need to, to create. It's not scale. Create an analytics solution to handle what's called different reporting, ad hoc reporting. Because ultimately a lot of key, different stakeholders as we currently growing, they need a lot of different types of data. So how would, so what would we do to solve that problem? To solve the ad hoc reporting and set up key metrics to be proactive to meet our stakeholders needs. 
+
+Antwoine Flowers
+None of you stop talking to me about meetings. This is a startup. You have a million dollars in burn rate. You got five months. You guys are growing hand over fist. You hire too many people. Your investors say we're not going to invest. Invest in you again in six months if we're not seeing a hundred percent year over year growth. You are the data scientist. You built this too fast. All of a sudden you guys went from a hundred thousand active users to 2 million active users. And now you don't know what's going on on the platform, who's coming, who's going, what churn rates are. You need to decide what the key metrics are for this business and you need to build an analytics solution immediately. 
+
+Abhishek Paul
+Gotcha. Gotcha. Okay, now I'm understanding. Okay, thank you for the clarification. All right, so right now, what's it called? We've scaled up very quickly from 100,000 to 2 million. We got six months almost called to grow 100% year over year. But we need to understand the key metrics in regards to how did we grow, why did we grow, is this sustainable growth and how can we reproduce this growth to meet our needs, to meet our investors and set the right expectations. So a couple of the key things here in regards to this. I would want to understand the current state of our users. New current state of the users, new users, how long users have been on the platform, what are the key features our users are leveraging our platform for. Then I would want to understand, okay, what's our current marketing strategy to get these users? Is this organic, is this word of mouth, is this a campaign? And then can, can we ultimately go and see, okay, based off of our time series, like when we did those campaigns, can we align them to specific growths accordingly? Then other things we want to do is understand the churn rate in regards to now we have 2 million active users. Are these new users like for the ones that are continuing to utilize it? What is the common length of on the platform? How often do they do it in a day, in a week, in a month? What's then we need to understand the demographic and our what's called of our users that will ultimately help us understand because ultimately the key stat and from my understanding for our investors, what they care about is 100% year over year growth. So what they want to see from us going from 100,000 to 2 million, they want us to go grow 100% from that 2 million and go from there. So we need new users. That's what we need to optimize. So how did we go and gather those current new users and what was that market? Have we then we need to ultimately answer the other question is 
+
+Antwoine Flowers
+and if we care about revenue growth, then we got to make sure that our churn is not too high. 
+
+Abhishek Paul
+Yeah, exactly. And then we also have to understand in regards to the current market, is that a tapped market in regards to our current market penetration. Understand how big that market is in terms of overall customers. Understand what's it called? Have we. Are there other untapped markets that we haven't leveraged as well? Because if so, that could be another potential growth opportunity as well. It's a fishing in one pond. We'll fish in multiple ponds. So that's just initial thoughts. 
+
+Antwoine Flowers
+Yeah, I like, I like the initial thoughts. Now you need to distill that thing down into what are you going to build first? You got all you got. You got. I love the business strategy. You lock me in on a business strategy. Yes. Now what are you going to build? And you go back to your engineering team. You're like, this is the information we need. What are you building? How are you, how are you doing this? Who are you talking to? 
+
+Abhishek Paul
+Yep. So engineering and business growth. Okay. First I would do is what's called, take all those different ideas, put them down on paper. Then the next thing I would do is have a conversation with business and growth and in regards to understanding. And can you tell me, like, what, how did we get from 100,000 2 million, what are your initial thoughts? What did we do to drive this? 
+
+Antwoine Flowers
+And I can be your PM. So, so we got some TikTok influencers and all of a sudden we plugged into, you know, that whole TikTok commerce thing. And next thing you know, we are getting flooded with like 15,000 new users a day for like the last 45 days. And some of these users are making purchases, some of them aren't. But the problem is we didn't even set up marketing attribution. So the only way, the only reason I know that they're coming from TikTok is because the products they're buying are the ones we paid to advertise. But, like, are people coming back? Are we doing any retargeting? Should we do retargeting? Who should we retarget? I don't know. None of that set up right now. 
+
+Abhishek Paul
+Okay. Yeah, so the first thing that we need to do is then I'd go talk with the head of product. They. Okay, right now we don't know what we don't know. We don't have any data of our current state. So before we even grow, we need to go and capture metadata of our current users. So in regards to. So for this we need to build. Oh, so am I the person building. 
+
+Antwoine Flowers
+Yeah. Or you're the head of data science. 
+
+Abhishek Paul
+Okay, I'm the head of data Science. So in regards to this, got. Okay, I'm in my, in this role. Got it? Got it. Oh, well. 
+
+Antwoine Flowers
+So your team is responsible for building out all the analytics. Now, you need to work with engineering, but what do you need to work with engineering to do? 
+
+Abhishek Paul
+I need to understand and. Well, what are the different API connections we can connect? With the product. Let's I need to understand how can if we build analytics engine. Yeah how do we connect? Like what is the capacity for the hardware? Like what are we utilizing on is if it's on the cloud. Is it on Azure aws. 
+
+Antwoine Flowers
+Got to make these decisions. Make a decision. Design me a high level architecture for this system. 
+
+Abhishek Paul
+Gotcha. High level architecture. I'm. Then we just put it on the cloud. That'd probably be the easiest go pick what's called Azure Analytics Engine. What's called we just built Ultimately we'd go put in building the engine to collect if we identify the KPIs that we'd want to do what's called then build out the code accordingly to identify those KPIs based off metadata that we'd be able to get. 
+
+Antwoine Flowers
+Where are we getting at? Where are we getting that metadata from on this platform? Do we need to instantiate anything with engineering to make sure we're collecting the appropriate data? 
+
+Abhishek Paul
+Is the platform already we would have to go and connect it to the E commerce website and then understand how to connect to it and but we'd have to go and set up some type of metadata on the back end to gather that data based off of users that go currently in the future. But then we'd have to see what we can do in the past as well. 
+
+Antwoine Flowers
+Let me ask you a question. Have you ever instantiated or implemented product analytics into a product before? 
+
+Abhishek Paul
+Not in real time. I've done product analytics after the fact but never putting it into like a system. 
+
+Antwoine Flowers
+Yeah. And so you know we're talking about stuff like feature flags. You got to go to engineering because a lot of times engineers write software to get their job done, but they're not thinking about the data generation process. And so your data pipelines might not even be set up. Right. And so you got to go to the engineers and you got to let them know like hey, this is the data that we need to capture. Here are the events that we need to capture. I need you to tag and localize these events and then you need to build data pipelines to capture that. Let's talk about that component a little bit. So you talked about Azure Analytics Engine. Give me a little bit about the data architecture, about how you're capturing this, how are you storing this and then how you're modeling this data out. So you got ecom data in. So you got a couple of different schemas. You got purchases users. What is a high level data schema look like or data model? What tables are you generating? 
+
+Abhishek Paul
+Yeah, so let's see. Tables generating. 
+
+Antwoine Flowers
+Take a step back. You know, you need to do analytics. You know the metrics you need to create. Back. Back out of the metrics to the tables. 
+
+Abhishek Paul
+Yeah, so you're talking like entity relation diagram tables. 
+
+Antwoine Flowers
+Yeah, I mean you need a user table, you need a purchases table, you need a products table, you need. 
+
+Abhishek Paul
+Yeah, so. Oh, got it, got it. Understood. Okay, appreciate. Yeah. So the different types of tables that we're going to be creating would be the users. Let's see, dates we're going to. Yeah, obviously we would need product, we would need categories. I mean we would need. 
+
+Antwoine Flowers
+Write down a single metric that you will want to track. Write down a single metric and walk back. Okay, let's see, purchases per month for a user. Yeah, you want to know on average how many purchases a single user makes per month. 
+
+Abhishek Paul
+So yeah, so if you want to know the metric in terms of like the user, specifically for purchases per month, we're obviously going to need the purchasing table. We're going to need like the users tables. We're going to need purchases. Let's say users. We're going to need probably. Yeah. Categories table. We're gonna need. 
+
+Antwoine Flowers
+So like a product dimension table. 
+
+Abhishek Paul
+Yeah, let's say categories, purchases, users. 
+
+Antwoine Flowers
+How you gonna, how are you. How are you gonna structure this event table? Right. You have a given user, you have a purchase they can make. And I want to create an analytics table that is like rolling purchases per week or rolling purchases per month, like so upstream of that. You have your product dimension table, your user probably ID table and then a user dimension table. What issues could you get into with like user dimension tables that aren't necessarily true for product dimension tables? 
+
+Abhishek Paul
+Let's see, instead of product, you could have same users under different accounts. Potentially instead of product, product is more of a clean, you know what the overall list will be for the product. In terms of, let's see, specifically user dimensions we'd want to know. Well, for that specific user we would get data in regards to like, let's see, obviously location. Well, I don't know if we get location, but at least the geography we'd want to get in regards to, we'd want information on the user in terms of like what type of user they are, but that would be after the fact based off the data that we get. So in regards to that we would need to categorize the type. Like well, we need to get type of user. If they are powered user, are they a new user? Are they like a single occurrence, what's called type of user. But that would be based off of the data set. To answer your question, ultimately yeah, we would need to. That would be semi structured in regards to a type of user. So that would probably be the most difficult one. But as long as we build out the pipelines accordingly in regards to like once they hit the purchase and the data that we get after the purchase and we set that up to give us the proper analytics, that would then moving forward that would be okay. But looking back, right? 
+
+Antwoine Flowers
+User dimensions change, right? 
+
+Abhishek Paul
+Yeah. 
+
+Antwoine Flowers
+So because user dimensions change, you generally need a type 2 table that has what this user dimensions table, like user dimensions were during this time period. So that when we go back and we do analytics purchases during this date, you then need to go to that type 2 dimension table so that you can get that user's dimensions at a certain time. Because if you're doing like demographics and you're saying, hey these part, these folks were in New York, but honestly they actually live in Philadelphia, right Then you're doing misattribution between some of the key things. So like this is just some of the stuff, this is some of the core data modeling nonsense that gets real. Like man, I'm not looking forward to the next six months of my life. Yeah, this is the fun stuff. 
+
+Abhishek Paul
+Yeah. So yeah I've like I've done. I've built the er. Diagrams etc like I'm not an expert in like these aspects. Obviously I do the research like I'm going into it. I've done a lot in a lot of different areas but obviously in that specific domain that's when I'd go research on what's called. Figure out what we need to do. But yeah. 
+
+Antwoine Flowers
+So anyways what are you an expert in? 
+
+Abhishek Paul
+I've built discrete event simulation models. I've built. 
+
+Antwoine Flowers
+What is that? What is. What problem does that solve? Discrete event simulation models. 
+
+Abhishek Paul
+Discrete event simulation models are specifically. So I've developed like those ultimately help solve. If you can build rule sets that's like rule sets and specifically steady state type of problems and you can model that and you have data that you can validate it against. Those work pretty well as long as that the environment isn't variable. Like. Well yeah, it's just like that's it stays pretty constant. You can use discrete event simulation type of problems for. We've done that. Say that again. 
+
+Antwoine Flowers
+Like physics stuff like if a plane is flying at 30,000ft and it's going through this much air pressure, like you don't expect those rules to change. Right? 
+
+Abhishek Paul
+Yeah, I haven't done it for that but we've done it specifically for it in terms of like what is it throughput problems in regards to specifically where like printed circuit board assembly line somewhat like we needed to model a digital twin for that and like creating a digital twin like discrete event simulation is good for. We've done it specifically for like I've built models specifically for predicting like mission like in logistics types of problems like in regards to rtat in regards to figuring out like how many parts we would need at a specific time but based off of certain. Certain key assumptions that you make. But anyways that was a while. That was a while ago. 
+
+Antwoine Flowers
+Yeah. When you say you built that model like you coded that model and put it in production. 
+
+Abhishek Paul
+Now those were Excel models. 
+
+Antwoine Flowers
+Okay. 
+
+Abhishek Paul
+Yeah but I've coded specifically and I put it into production natural language processing models. Like I've pushed two problems in the production but I built a lot more prototypes and the two problems I put into production myself were specifically for predictive maintenance in regards to adjudicating maintenance action codes and that was using natural language process. Natural language process.
