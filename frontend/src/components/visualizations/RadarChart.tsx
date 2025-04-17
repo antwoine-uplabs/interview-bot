@@ -1,4 +1,4 @@
-import React from 'react';
+// Component for displaying candidate skills as a radar chart
 import {
   Chart as ChartJS,
   RadialLinearScale,
@@ -62,8 +62,8 @@ export default function RadarChart({ criteria }: RadarChartProps) {
       },
       tooltip: {
         callbacks: {
-          label: function(context: { dataset: { label: string }, formattedValue: string }) {
-            return `${context.dataset.label}: ${context.formattedValue}/10`;
+          label: function(tooltipItem: any) {
+            return `${tooltipItem.dataset.label}: ${tooltipItem.formattedValue}/10`;
           }
         }
       }

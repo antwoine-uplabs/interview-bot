@@ -1,0 +1,35 @@
+name: Supabase Edge Functions CI
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'supabase/functions/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'supabase/functions/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Deno
+      uses: denoland/setup-deno@v1
+      with:
+        deno-version: v1.x
+    
+    - name: Lint
+      run: |
+        cd supabase/functions
+        deno lint **/*.ts
+      continue-on-error: true
+    
+    - name: Format check
+      run: |
+        cd supabase/functions
+        deno fmt --check **/*.ts
+      continue-on-error: true

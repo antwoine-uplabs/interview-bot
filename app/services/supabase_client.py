@@ -409,6 +409,134 @@ class SupabaseService:
         # In a real implementation, we would check if the table exists and create it if needed
         # For this implementation, we'll assume the table is created via migrations or manually
         pass
+    
+    def get_total_interviews(self, user_id: Optional[str] = None) -> int:
+        """
+        Get the total number of interviews for a user or all users
+        
+        Args:
+            user_id: Optional user ID to filter by
+            
+        Returns:
+            Total number of interviews
+        """
+        if not self.is_connected():
+            logger.error("Cannot get total interviews: Supabase client not initialized")
+            return 0
+            
+        try:
+            query = self.client.table('interviews').select('count', count='exact')
+            
+            if user_id:
+                query = query.eq('user_id', user_id)
+                
+            result = query.execute()
+            
+            # Extract count from the result
+            if hasattr(result, 'count') and result.count is not None:
+                return result.count
+            else:
+                return 0
+                
+        except Exception as e:
+            logger.error(f"Error getting total interviews from Supabase: {e}", exc_info=True)
+            return 0
+    
+    def get_total_evaluations(self, user_id: Optional[str] = None) -> int:
+        """
+        Get the total number of completed evaluations for a user or all users
+        
+        Args:
+            user_id: Optional user ID to filter by
+            
+        Returns:
+            Total number of evaluations
+        """
+        if not self.is_connected():
+            logger.error("Cannot get total evaluations: Supabase client not initialized")
+            return 0
+            
+        try:
+            # First, get all interview IDs for the user
+            interviews_query = self.client.table('interviews').select('id')
+            
+            if user_id:
+                interviews_query = interviews_query.eq('user_id', user_id)
+                
+            interviews_query = interviews_query.eq('status', 'evaluated')
+            
+            interviews_result = interviews_query.execute()
+            
+            # Count evaluations based on these interview IDs
+            if not interviews_result.data:
+                return 0
+                
+            # Count evaluations from evaluation_results table
+            evaluation_count = self.client.table('evaluation_results').select('count', count='exact').execute()
+            
+            # Extract count from the result
+            if hasattr(evaluation_count, 'count') and evaluation_count.count is not None:
+                return evaluation_count.count
+            else:
+                return 0
+                
+        except Exception as e:
+            logger.error(f"Error getting total evaluations from Supabase: {e}", exc_info=True)
+            return 0
+    
+    def get_usage_statistics(self, user_id: Optional[str] = None, days: int = 30) -> Dict[str, Any]:
+        """
+        Get usage statistics for a user or all users
+        
+        Args:
+            user_id: Optional user ID to filter by
+            days: Number of days to include in the statistics
+            
+        Returns:
+            Dictionary of usage statistics
+        """
+        if not self.is_connected():
+            logger.error("Cannot get usage statistics: Supabase client not initialized")
+            return {}
+            
+        try:
+            # Calculate the timestamp for X days ago
+            from datetime import datetime, timedelta
+            start_date = (datetime.now() - timedelta(days=days)).isoformat()
+            
+            # Get interviews in the date range
+            interviews_query = self.client.table('interviews').select('id, status, created_at')
+            
+            if user_id:
+                interviews_query = interviews_query.eq('user_id', user_id)
+                
+            interviews_query = interviews_query.gte('created_at', start_date)
+            
+            interviews_result = interviews_query.execute()
+            
+            # Count by status
+            status_counts = {}
+            daily_counts = {}
+            
+            for interview in interviews_result.data:
+                # Count by status
+                status = interview.get('status', 'unknown')
+                status_counts[status] = status_counts.get(status, 0) + 1
+                
+                # Count by day
+                date_str = interview.get('created_at', '').split('T')[0]  # Just get the date part
+                if date_str:
+                    daily_counts[date_str] = daily_counts.get(date_str, 0) + 1
+            
+            return {
+                "total_interviews": len(interviews_result.data),
+                "by_status": status_counts,
+                "daily_counts": daily_counts
+            }
+                
+        except Exception as e:
+            logger.error(f"Error getting usage statistics from Supabase: {e}", exc_info=True)
+            return {}
 
 
 # Create a singleton instance

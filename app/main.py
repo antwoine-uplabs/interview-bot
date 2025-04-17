@@ -1,7 +1,7 @@
 import logging
 import os
 import uuid
-from fastapi import FastAPI, UploadFile, File, HTTPException, BackgroundTasks, Depends
+from fastapi import FastAPI, UploadFile, File, HTTPException, BackgroundTasks, Depends, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -9,6 +9,10 @@ from datetime import datetime
 from typing import Dict, Any, Optional
 from pydantic import BaseModel
 from dotenv import load_dotenv
+import sentry_sdk
+from sentry_sdk.integrations.fastapi import FastApiIntegration
+from sentry_sdk.integrations.logging import LoggingIntegration
+from sentry_sdk.integrations.starlette import StarletteIntegration
 
 # Local imports
 from app.models.models import (
@@ -32,6 +36,24 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Initialize Sentry
+if os.environ.get("SENTRY_DSN"):
+    sentry_sdk.init(
+        dsn=os.environ["SENTRY_DSN"],
+        enable_tracing=True,
+        environment=os.environ.get("SENTRY_ENVIRONMENT", "development"),
+        traces_sample_rate=float(os.environ.get("SENTRY_TRACES_SAMPLE_RATE", "0.2")),
+        integrations=[
+            FastApiIntegration(),
+            StarletteIntegration(),
+            LoggingIntegration(
+                level=logging.INFO,
+                event_level=logging.ERROR
+            ),
+        ],
+    )
+    logger.info("Sentry initialized for error tracking and monitoring")
+
 # Create FastAPI app
 app = FastAPI(
     title="Interview Evaluator API",
@@ -39,10 +61,15 @@ app = FastAPI(
     version="0.1.0"
 )
 
-# Configure CORS for local development
+# Configure CORS for both development and production
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Frontend Vite default port
+    allow_origins=[
+        "http://localhost:5173",  # Frontend Vite default port (development)
+        "http://localhost:3000",  # Alternative local development port
+        "https://*.vercel.app",   # Vercel preview deployments
+        "https://*.interview-evaluator.app"  # Production domain (adjust as needed)
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -264,14 +291,22 @@ async def health_check():
     # Check Supabase connection
     supabase_connected = supabase_service.is_connected()
     
-    # For Sprint 1, we don't check LLM availability
-    # In later sprints, we'll add checks for LlamaIndex, LangGraph, etc.
+    # Check Sentry connection
+    sentry_configured = bool(os.environ.get("SENTRY_DSN"))
+    
+    # Check LangSmith connection
+    langsmith_configured = langsmith_service.is_configured()
+    
+    # Determine overall status
+    all_services_ok = all([supabase_connected, sentry_configured, langsmith_configured])
     
     return JSONResponse(content={
-        "status": "ok" if supabase_connected else "degraded",
+        "status": "ok" if all_services_ok else "degraded",
         "timestamp": datetime.now().isoformat(),
         "dependencies": {
-            "supabase": "connected" if supabase_connected else "disconnected"
+            "supabase": "connected" if supabase_connected else "disconnected",
+            "sentry": "configured" if sentry_configured else "not_configured",
+            "langsmith": "configured" if langsmith_configured else "not_configured"
         }
     })
 
@@ -387,6 +422,68 @@ async def get_all_evaluations(
             status_code=500,
             detail=f"Error getting evaluations: {str(e)}"
         )
+
+@app.get("/monitoring/metrics", tags=["Monitoring"])
+async def get_monitoring_metrics(
+    current_user: Dict[str, Any] = Depends(get_current_user),
+    days: int = 7
+):
+    """
+    Get monitoring metrics for the application
+    
+    This endpoint:
+    1. Collects metrics from LangSmith for LLM usage
+    2. Collects metrics from Supabase for database operations
+    3. Returns consolidated metrics in a formatted response
+    
+    Requires authentication via JWT Bearer token.
+    """
+    try:
+        logger.info(f"Fetching monitoring metrics for user {current_user.get('user_id')}")
+        
+        # Get LangSmith metrics
+        langsmith_metrics = langsmith_service.get_run_metrics(days=days)
+        
+        # Get Supabase metrics (total interviews and evaluations)
+        supabase_metrics = {}
+        if supabase_service.is_connected():
+            # Get total interviews
+            interviews = supabase_service.get_total_interviews(user_id=current_user.get("user_id"))
+            # Get total evaluations
+            evaluations = supabase_service.get_total_evaluations(user_id=current_user.get("user_id"))
+            # Get usage statistics
+            usage_stats = supabase_service.get_usage_statistics(
+                user_id=current_user.get("user_id"),
+                days=days
+            )
+            
+            supabase_metrics = {
+                "total_interviews": interviews,
+                "total_evaluations": evaluations,
+                "usage_statistics": usage_stats
+            }
+        
+        # Combine all metrics
+        return JSONResponse(content={
+            "status": "success",
+            "timestamp": datetime.now().isoformat(),
+            "langsmith_metrics": langsmith_metrics,
+            "database_metrics": supabase_metrics
+        })
+        
+    except Exception as e:
+        logger.exception(f"Error getting monitoring metrics: {e}")
+        
+        # Capture in Sentry if available
+        if os.environ.get("SENTRY_DSN"):
+            import sentry_sdk
+            sentry_sdk.capture_exception(e)
+            
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error retrieving monitoring metrics: {str(e)}"
+        )
+
 
 @app.get("/results/{interview_id}", tags=["Evaluation"])
 async def get_evaluation_results(

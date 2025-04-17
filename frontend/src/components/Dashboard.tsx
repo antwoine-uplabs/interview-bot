@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useAuth } from '../context/useAuth';
 import FileUpload from './FileUpload';
 import EvaluationResults from './EvaluationResults';

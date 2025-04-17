@@ -1,8 +1,13 @@
 import { createClient } from '@supabase/supabase-js';
 
-// This would be stored in environment variables in a production app
-const SUPABASE_URL = 'https://ncljfmsdsdwundzqskmu.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jbGpmbXNkc2R3dW5kenFza211Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTg0NDg2NTUsImV4cCI6MjAxNDAyNDY1NX0.VOjHsqb_WImT1EaWK_DwS_FnwH9LVGy9TS3U_XCJ5pc';
+// Get Supabase credentials from environment variables
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || '';
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+
+// Validate environment variables
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  console.error('Missing Supabase environment variables. Authentication will not work.');
+}
 
 // Create a single supabase client for the entire app
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);

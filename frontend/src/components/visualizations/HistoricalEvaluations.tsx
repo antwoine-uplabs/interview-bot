@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { EvaluationResult, getPastEvaluations } from '../../services/api';
 import RadarChart from './RadarChart';
 import BarChart from './BarChart';
-import { getAuthHeader } from '../../services/api';
+// Import utilities for exporting evaluation results
 import { exportToCSV, exportToJSON, exportToPDF } from '../../utils/exportUtils';
 
 export default function HistoricalEvaluations() {

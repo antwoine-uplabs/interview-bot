@@ -1,4 +1,4 @@
-import React from 'react';
+// Bar chart component for displaying skills comparison
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -66,8 +66,8 @@ export default function BarChart({ criteria }: BarChartProps) {
       },
       tooltip: {
         callbacks: {
-          label: function(context: { formattedValue: string }) {
-            return `Score: ${context.formattedValue}/10`;
+          label: function(tooltipItem: any) {
+            return `Score: ${tooltipItem.formattedValue}/10`;
           }
         }
       }

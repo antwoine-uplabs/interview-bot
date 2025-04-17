@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Chart as ChartJS,
   RadialLinearScale,
@@ -28,7 +28,7 @@ interface ComparativeEvaluationProps {
 export default function ComparativeEvaluation({ evaluations: initialEvaluations }: ComparativeEvaluationProps) {
   const [evaluations, setEvaluations] = useState<EvaluationResult[]>(initialEvaluations);
   const [selectedEvaluations, setSelectedEvaluations] = useState<string[]>([]);
-  const [chartData, setChartData] = useState<Record<string, unknown> | null>(null);
+  const [chartData, setChartData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
@@ -146,8 +146,8 @@ export default function ComparativeEvaluation({ evaluations: initialEvaluations 
       },
       tooltip: {
         callbacks: {
-          label: function(context: { dataset: { label: string }, formattedValue: string }) {
-            return `${context.dataset.label}: ${context.formattedValue}/10`;
+          label: function(tooltipItem: any) {
+            return `${tooltipItem.dataset.label}: ${tooltipItem.formattedValue}/10`;
           }
         }
       }

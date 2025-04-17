@@ -1,92 +1,99 @@
-# Interview Evaluator
+# Interview Evaluator 
 
-An AI-powered tool for evaluating technical interviews using LangGraph.
+![Frontend CI](https://github.com/antwoine-uplabs/interview-bot/actions/workflows/frontend-ci.yml/badge.svg)
+![Supabase Edge Functions CI](https://github.com/antwoine-uplabs/interview-bot/actions/workflows/edge-functions-ci.yml/badge.svg)
 
-## Overview
-
-The Interview Evaluator processes interview transcripts and provides detailed evaluations of candidates' technical skills, communication abilities, and overall performance. The system uses a state-based LangGraph agent to identify strengths and weaknesses in candidates and provides quantifiable assessments.
+A web application that evaluates data science interview transcripts using AI, providing detailed feedback and visualizations.
 
 ## Features
 
-- Upload interview transcripts for automated evaluation
-- Evaluate technical skills across multiple domains (Python, SQL, Statistics, ML)
-- Generate detailed feedback with supporting evidence from the transcript
-- Track candidate strengths and areas for improvement
-- Monitor and trace evaluations with LangSmith
+- **Upload Interview Transcripts**: Easily upload text-based interview transcripts
+- **AI-Powered Evaluation**: Automated assessment of technical skills and communication
+- **Data Visualization**: Radar charts, bar charts, and comparative analysis
+- **User Authentication**: Secure access with Supabase authentication
+- **Real-time Status Updates**: Track evaluation progress
+- **Export Functionality**: Download results in CSV, JSON, or PDF formats
+- **Historical Evaluation View**: Review and filter past evaluations
+- **Comparative Analysis**: Compare multiple candidates side-by-side
 
-## Project Status
+## Tech Stack
 
-- **Sprint 1**: Completed - Frontend and basic backend setup
-- **Sprint 2**: Completed - LangGraph agent implementation and LangSmith integration
-- **Sprint 3**: In Progress - End-to-end workflow and API integration (55% complete)
+### Frontend
+- TypeScript
+- React
+- Tailwind CSS
+- Chart.js for visualizations
+- Supabase JS client
+
+### Backend
+- Supabase (Database, Authentication, Storage)
+- Supabase Edge Functions (Serverless)
+- OpenAI API for evaluation
+- LangSmith for monitoring (optional)
 
 ## Getting Started
 
-### Backend
+### Prerequisites
+- Node.js 18+
+- Supabase account
+- OpenAI API key
 
-1. Create a Python virtual environment and activate it:
+### Installation
+
+1. Clone the repository:
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+git clone https://github.com/antwoine-uplabs/interview-bot.git
+cd interview-bot
 ```
 
 2. Install dependencies:
 ```bash
-pip install -r requirements.txt
+# Frontend dependencies
+cd frontend
+npm install
 ```
 
 3. Set up environment variables:
 ```bash
-cp .env.example .env
-# Edit .env with your API keys and configuration
+# Create frontend .env file
+cp frontend/.env.example frontend/.env.local
 ```
 
-4. Run the FastAPI backend:
-```bash
-python -m app.main
-```
+4. Update environment variables in `.env.local` with your Supabase credentials and OpenAI API key.
 
-### Frontend
+### Running Locally
 
-1. Navigate to the frontend directory:
+1. Start the frontend development server:
 ```bash
 cd frontend
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Start the development server:
-```bash
 npm run dev
 ```
 
-## Architecture
+2. The application will be available at http://localhost:5173/
 
-The application follows a modular architecture:
+## Deployment
 
-- **FastAPI Backend**: Handles file uploads, API endpoints, and communication with LangGraph agent
-- **React Frontend**: Provides user interface for uploading transcripts and viewing results
-- **LangGraph Agent**: State-based agent for processing and evaluating interview transcripts
-- **LangSmith Integration**: Provides tracing and monitoring for LLM-based evaluation
-- **Supabase**: Database for storing interview data and evaluation results
+### Frontend (Vercel)
+1. Import the GitHub repository into Vercel
+2. Set the root directory to `/frontend`
+3. Configure environment variables
+4. Deploy!
 
-## Evaluation Criteria
+### Edge Functions (Supabase)
+1. Install Supabase CLI
+2. Link to your Supabase project
+3. Deploy Edge Functions:
+```bash
+supabase functions deploy evaluate-transcript
+```
 
-Interviews are evaluated across the following dimensions:
+For detailed deployment instructions, see [Deployment Guide](./docs/supabase-deployment-guide.md).
 
-- **Python**: Understanding of Python fundamentals, libraries, and coding patterns
-- **SQL**: Knowledge of database queries, joins, and optimizations
-- **Statistics**: Understanding of statistical concepts and methods
-- **Machine Learning**: Knowledge of ML algorithms, evaluation metrics, and model building
-- **Communication**: Clarity, precision, and technical vocabulary
+## License
 
-## Tech Stack
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-- **Backend**: Python, FastAPI, LangGraph, LangChain, OpenAI
-- **Frontend**: TypeScript, React, Tailwind CSS
-- **Database**: Supabase
-- **Monitoring**: LangSmith
-- **Deployment**: [TBD]
+## Acknowledgments
+
+- This project was created as part of the interview evaluation system for data science candidates
+- Special thanks to the Uplabs team for their guidance and support

@@ -46,7 +46,7 @@ class ApiError extends Error {
 }
 
 // Check if authorization token exists
-export const getAuthHeader = () => {
+export const getAuthHeader = (): Record<string, string> => {
   const token = localStorage.getItem('supabase_auth_token');
   return token ? { 'Authorization': `Bearer ${token}` } : {};
 };
@@ -61,12 +61,11 @@ export async function uploadTranscript(file: File): Promise<EvaluationResult> {
     formData.append('file', file);
     
     // First, send the file to the backend
+    const headers = getAuthHeader();
     const response = await fetch(`${API_BASE_URL}/upload`, {
       method: 'POST',
       body: formData,
-      headers: {
-        ...getAuthHeader()
-      }
+      headers
     });
     
     if (!response.ok) {
@@ -148,7 +147,22 @@ async function pollEvaluationResults(interviewId: string, candidateName: string,
 /**
  * Evaluate a transcript using the /evaluate endpoint
  */
-export async function evaluateTranscript(interviewId: string, candidateName: string): Promise<Record<string, unknown>> {
+interface EvaluationResponse {
+  status: string;
+  overall_score: number;
+  summary: string;
+  criteria_evaluations: Array<{
+    criterion: string;
+    score: number;
+    justification: string;
+    supporting_quotes?: string[];
+  }>;
+  strengths?: string[];
+  weaknesses?: string[];
+  error?: string;
+}
+
+export async function evaluateTranscript(interviewId: string, candidateName: string): Promise<EvaluationResponse> {
   try {
     // This function can work with both FastAPI backend and Supabase Edge Functions
     // Determine which endpoint to use based on environment configuration
@@ -182,11 +196,12 @@ export async function evaluateTranscript(interviewId: string, candidateName: str
       return await response.json();
     } else {
       // Use FastAPI backend (original implementation)
+      const authHeaders = getAuthHeader();
       const response = await fetch(`${API_BASE_URL}/evaluate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          ...getAuthHeader()
+          ...authHeaders
         },
         body: JSON.stringify({
           interview_id: interviewId,
@@ -263,31 +278,30 @@ export async function getPastEvaluations(): Promise<EvaluationResult[]> {
       }
       
       // Map the Supabase response to our frontend model
-      return evaluations.map(eval => {
+      return evaluations.map((evaluation: any) => {
         // Group criteria evaluations by interview
-        const criteriaEvals = eval.criteria_evaluations || [];
+        const criteriaEvals = evaluation.criteria_evaluations || [];
         
         return {
-          candidateName: eval.interviews?.candidate_name || 'Unknown',
-          overallScore: eval.overall_score,
-          criteria: criteriaEvals.map(criterion => ({
+          candidateName: evaluation.interviews?.candidate_name || 'Unknown',
+          overallScore: evaluation.overall_score,
+          criteria: criteriaEvals.map((criterion: any) => ({
             name: criterion.criterion_name,
             score: criterion.score,
             justification: criterion.justification,
             supporting_quotes: criterion.supporting_quotes || []
           })),
-          summary: eval.summary,
-          strengths: eval.strengths || [],
-          weaknesses: eval.weaknesses || [],
-          interview_id: eval.interview_id
+          summary: evaluation.summary,
+          strengths: evaluation.strengths || [],
+          weaknesses: evaluation.weaknesses || [],
+          interview_id: evaluation.interview_id
         };
       });
     } else {
       // Use FastAPI backend (original implementation)
+      const authHeaders = getAuthHeader();
       const response = await fetch(`${API_BASE_URL}/evaluations`, {
-        headers: {
-          ...getAuthHeader()
-        }
+        headers: authHeaders
       });
       
       if (!response.ok) {
@@ -303,7 +317,7 @@ export async function getPastEvaluations(): Promise<EvaluationResult[]> {
       return results.map((result: Record<string, unknown>) => ({
         candidateName: result.candidate_name,
         overallScore: result.overall_score,
-        criteria: result.criteria_evaluations.map((criterion: Record<string, unknown>) => ({
+        criteria: (result.criteria_evaluations as Array<Record<string, unknown>>).map((criterion: Record<string, unknown>) => ({
           name: criterion.criterion,
           score: criterion.score,
           justification: criterion.justification,
@@ -320,6 +334,67 @@ export async function getPastEvaluations(): Promise<EvaluationResult[]> {
       throw error;
     } else {
       throw new ApiError('An unexpected error occurred while fetching evaluations', 500);
+    }
+  }
+}
+
+/**
+ * Fetch monitoring metrics for the application
+ */
+export async function fetchMonitoringMetrics(days: number = 7): Promise<Record<string, unknown>> {
+  try {
+    // Determine which approach to use based on environment configuration
+    const useSupabaseDirect = import.meta.env.VITE_USE_SUPABASE_DIRECT === 'true';
+    
+    if (useSupabaseDirect) {
+      // Import supabase client on demand to avoid circular dependencies
+      const { default: supabase } = await import('./supabase');
+      
+      // Use Supabase Functions directly
+      const { data, error } = await supabase.functions.invoke('monitoring-metrics', {
+        body: { days }
+      });
+      
+      if (error) throw error;
+      
+      return data || {
+        status: 'success',
+        timestamp: new Date().toISOString(),
+        langsmith_metrics: {},
+        database_metrics: {}
+      };
+    } else {
+      // Use FastAPI backend
+      const authHeaders = getAuthHeader();
+      const response = await fetch(`${API_BASE_URL}/monitoring/metrics?days=${days}`, {
+        headers: authHeaders
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new ApiError(
+          errorData.detail || `Failed to fetch monitoring metrics: ${response.status}`, 
+          response.status
+        );
+      }
+      
+      return await response.json();
+    }
+  } catch (error) {
+    // Report error to Sentry
+    if (import.meta.env.VITE_SENTRY_DSN) {
+      import('@sentry/react').then(Sentry => {
+        Sentry.captureException(error);
+      });
+    }
+    
+    // Also log to console
+    console.error('Error fetching monitoring metrics:', error);
+    
+    if (error instanceof ApiError) {
+      throw error;
+    } else {
+      throw new ApiError('An unexpected error occurred while fetching monitoring metrics', 500);
     }
   }
 }
