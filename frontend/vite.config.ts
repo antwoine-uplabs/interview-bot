@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
 
-// https://vite.dev/config/
+// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react(),
@@ -14,5 +14,5 @@ export default defineConfig({
   ],
   build: {
     sourcemap: true, // Source maps help Sentry better trace issues
-  },
+  }
 })

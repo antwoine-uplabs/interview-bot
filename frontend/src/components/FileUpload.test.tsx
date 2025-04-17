@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import FileUpload from './FileUpload';
 import { uploadTranscript } from '../services/api';
@@ -42,7 +42,7 @@ describe('FileUpload Component', () => {
     const { container } = render(<FileUpload onEvaluationComplete={mockOnEvaluationComplete} />);
     
     const file = new File(['test interview content'], 'interview.txt', { type: 'text/plain' });
-    const input = container.querySelector('input[type="file"]');
+    const input = container.querySelector('input[type="file"]') as HTMLInputElement;
     
     if (input) {
       await user.upload(input, file);
@@ -67,7 +67,7 @@ describe('FileUpload Component', () => {
     const { container } = render(<FileUpload onEvaluationComplete={mockOnEvaluationComplete} />);
     
     const file = new File(['test interview content'], 'interview.pdf', { type: 'application/pdf' });
-    const input = container.querySelector('input[type="file"]');
+    const input = container.querySelector('input[type="file"]') as HTMLInputElement;
     
     if (input) {
       await user.upload(input, file);
@@ -85,7 +85,7 @@ describe('FileUpload Component', () => {
     const { container } = render(<FileUpload onEvaluationComplete={mockOnEvaluationComplete} />);
     
     const file = new File(['test interview content'], 'interview.txt', { type: 'text/plain' });
-    const input = container.querySelector('input[type="file"]');
+    const input = container.querySelector('input[type="file"]') as HTMLInputElement;
     
     if (input) {
       await user.upload(input, file);

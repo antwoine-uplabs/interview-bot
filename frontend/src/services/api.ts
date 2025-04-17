@@ -398,3 +398,63 @@ export async function fetchMonitoringMetrics(days: number = 7): Promise<Record<s
     }
   }
 }
+
+/**
+ * Fetch monitoring data including metrics and cost projection
+ */
+export async function fetchMonitoringData(days: number = 7): Promise<Record<string, unknown>> {
+  try {
+    const authHeaders = getAuthHeader();
+    const response = await fetch(`${API_BASE_URL}/monitoring?time_range_hours=${days * 24}`, {
+      headers: authHeaders
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new ApiError(
+        errorData.detail || `Failed to fetch monitoring data: ${response.status}`, 
+        response.status
+      );
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching monitoring data:', error);
+    
+    if (error instanceof ApiError) {
+      throw error;
+    } else {
+      throw new ApiError('An unexpected error occurred while fetching monitoring data', 500);
+    }
+  }
+}
+
+/**
+ * Fetch cost projection data
+ */
+export async function fetchCostProjection(): Promise<Record<string, unknown>> {
+  try {
+    const authHeaders = getAuthHeader();
+    const response = await fetch(`${API_BASE_URL}/cost-projection`, {
+      headers: authHeaders
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new ApiError(
+        errorData.detail || `Failed to fetch cost projection: ${response.status}`, 
+        response.status
+      );
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching cost projection:', error);
+    
+    if (error instanceof ApiError) {
+      throw error;
+    } else {
+      throw new ApiError('An unexpected error occurred while fetching cost projection', 500);
+    }
+  }
+}
