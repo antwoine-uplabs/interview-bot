@@ -1,119 +1,250 @@
 # Deployment Guide for Interview Evaluator
 
-This document outlines the steps to deploy the Interview Evaluator application using Vercel for the frontend and your preferred hosting solution for the backend API.
+This document outlines the process for deploying the Interview Evaluator application to a production environment. The application consists of two main components:
 
-## Frontend Deployment (Vercel)
+1. **Backend API (FastAPI)**: Handles interview transcript processing and evaluation using LLMs.
+2. **Frontend (React)**: Provides the user interface for uploading transcripts and viewing evaluations.
 
-### Prerequisites
-- A GitHub account connected to Vercel
-- Access to the repository at https://github.com/antwoine-uplabs/interview-bot
-- Supabase project with the required schema (see `SUPABASE_SETUP.md`)
+## Prerequisites
 
-### Step 1: Set up Vercel Project
+Before deploying, ensure you have the following:
 
-1. Log in to [Vercel](https://vercel.com) and create a new project
-2. Import the GitHub repository (`antwoine-uplabs/interview-bot`)
-3. Select the `frontend` directory as the root directory for the project
+- Docker and Docker Compose installed on the target server
+- Supabase project set up with the correct schema
+- API keys for:
+  - OpenAI or another LLM provider
+  - Supabase (service role key)
+  - Sentry (for error monitoring)
+  - LangSmith (for LLM monitoring)
+- Domain name (for production deployment)
 
-### Step 2: Configure Environment Variables
+## Deployment Options
 
-Add the following environment variables in the Vercel project settings:
+### Option 1: Docker Compose (Self-Hosted)
 
-- `VITE_SUPABASE_URL`: Your Supabase project URL
-- `VITE_SUPABASE_ANON_KEY`: Your Supabase anonymous key (public)
-- `VITE_API_URL`: The URL of your deployed backend API (see Backend Deployment section)
+1. **Clone the Repository**
 
-### Step 3: Deploy
+   ```bash
+   git clone https://github.com/antwoine-uplabs/interview-bot.git
+   cd interview-bot
+   ```
 
-1. Trigger a deployment in Vercel
-2. Vercel will automatically build and deploy the frontend using the settings in `vercel.json`
-3. After deployment, Vercel will provide a URL for your application
+2. **Configure Environment Variables**
 
-## Backend Deployment Options
+   Create a `.env` file in the root directory with the required environment variables:
 
-The backend can be deployed to various hosting platforms. Here are a few options:
+   ```bash
+   # Supabase Configuration
+   SUPABASE_URL=https://your-project.supabase.co
+   SUPABASE_KEY=your-supabase-service-role-key
+   
+   # LLM Configuration
+   OPENAI_API_KEY=your-openai-key
+   
+   # Monitoring
+   SENTRY_DSN=your-sentry-backend-dsn
+   LANGSMITH_API_KEY=your-langsmith-api-key
+   ```
 
-### Option 1: Render
+3. **Update Domain in Caddyfile**
 
-1. Create a new Web Service in Render
-2. Connect to the GitHub repository
-3. Set the root directory to the project root (not frontend)
-4. Set the build command: `pip install -r requirements.txt`
-5. Set the start command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-6. Add environment variables:
-   - `SUPABASE_URL`: Your Supabase project URL
-   - `SUPABASE_SERVICE_ROLE_KEY`: Your Supabase service role key (private)
-   - `SUPABASE_JWT_SECRET`: Your Supabase JWT secret
-   - `OPENAI_API_KEY`: Your OpenAI API key
-   - `LANGCHAIN_API_KEY`: Your LangChain API key (for LangSmith)
-   - `LANGCHAIN_PROJECT`: Your LangSmith project name
+   Edit the `Caddyfile` to use your domain:
 
-### Option 2: AWS Lambda with API Gateway
+   ```
+   your-domain.com {
+     # Configuration...
+   }
+   ```
 
-1. Package the application for Lambda using a framework like Zappa or Mangum
-2. Create a Lambda function with the packaged code
-3. Set up API Gateway to route requests to your Lambda function
-4. Configure environment variables in the Lambda settings
-5. Deploy and note the API Gateway endpoint URL
+4. **Build and Start Services**
 
-### Option 3: Docker with any container hosting service
+   ```bash
+   docker-compose up -d
+   ```
 
-1. Create a Dockerfile based on the example below
-2. Build and push the container to a registry (Docker Hub, AWS ECR, etc.)
-3. Deploy to a container hosting service (AWS ECS, Google Cloud Run, etc.)
-4. Configure environment variables in the container service
+5. **Verify Deployment**
 
-Example Dockerfile:
-```dockerfile
-FROM python:3.10-slim
+   Check that all services are running:
 
-WORKDIR /app
+   ```bash
+   docker-compose ps
+   ```
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+   Test the API:
 
-COPY . .
+   ```bash
+   curl https://your-domain.com/api/health
+   ```
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
-```
+### Option 2: Cloud Deployment
 
-## Connecting Frontend and Backend
+#### Backend API (Any Cloud Provider)
 
-Once both the frontend and backend are deployed:
+1. **Build the Docker Image**
 
-1. Update the `VITE_API_URL` environment variable in Vercel to point to your backend URL
-2. Redeploy the frontend if necessary
-3. Ensure CORS is properly configured in the backend to allow requests from your Vercel domain
+   ```bash
+   docker build -t interview-evaluator-api .
+   ```
 
-## Enabling Supabase Authentication
+2. **Push to Container Registry**
 
-Make sure your Supabase project has the following settings:
+   ```bash
+   # Example for AWS ECR
+   aws ecr get-login-password --region region | docker login --username AWS --password-stdin your-account-id.dkr.ecr.region.amazonaws.com
+   docker tag interview-evaluator-api:latest your-account-id.dkr.ecr.region.amazonaws.com/interview-evaluator-api:latest
+   docker push your-account-id.dkr.ecr.region.amazonaws.com/interview-evaluator-api:latest
+   ```
 
-1. Enable Email authentication in the Auth settings
-2. Configure allowed redirect URLs to include your Vercel deployment URL
-3. Set up email templates for authentication emails
+3. **Deploy to Cloud Service**
 
-## Monitoring and Logging
+   - AWS: Deploy to ECS, Fargate, or EKS
+   - Google Cloud: Deploy to Cloud Run or GKE
+   - Azure: Deploy to AKS or App Service
 
-1. Set up LangSmith for monitoring LLM operations
-2. Configure monitoring for your backend hosting platform
-3. Set up error tracking with a service like Sentry
+   Ensure you configure the required environment variables.
 
-## Helpful Commands
+#### Frontend (Vercel)
 
-```bash
-# Test the backend locally
-uvicorn app.main:app --reload --port 8000
+1. **Connect Repository to Vercel**
 
-# Build the frontend
-cd frontend && npm run build
+   - Link your GitHub repository to Vercel
+   - Configure build settings:
+     - Build Command: `npm run build`
+     - Output Directory: `dist`
 
-# Preview the frontend build
-cd frontend && npm run preview
-```
+2. **Configure Environment Variables in Vercel**
+
+   Set the following environment variables:
+
+   ```
+   VITE_SUPABASE_URL=https://your-project.supabase.co
+   VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
+   VITE_API_URL=https://your-api-domain.com
+   VITE_SENTRY_DSN=your-sentry-frontend-dsn
+   ```
+
+3. **Deploy**
+
+   Trigger a deployment in Vercel.
+
+## Monitoring Setup
+
+### Sentry
+
+1. **View Error Dashboards**
+
+   Access your Sentry dashboards to monitor:
+   - Frontend errors
+   - Backend exceptions
+   - Performance metrics
+
+2. **Configure Alerts**
+
+   Set up notification rules for critical errors.
+
+### LangSmith
+
+1. **Monitor LLM Performance**
+
+   Use the LangSmith dashboard to:
+   - Track LLM calls
+   - Monitor latency
+   - Analyze prompt effectiveness
+
+2. **Set Up Tracing**
+
+   Ensure `LANGSMITH_TRACING_V2=true` is set to enable detailed tracing.
+
+## CI/CD Pipeline
+
+The repository is configured with GitHub Actions for continuous integration:
+
+- **Frontend CI**: Runs on changes to frontend code
+  - Lints and type-checks TypeScript
+  - Runs unit tests
+  - Builds the application
+
+- **Backend CI**: Runs on changes to Python code
+  - Runs pytest
+  - Checks code style with Black and isort
+  - Builds the Docker image
+
+- **Deployment**: Triggered on main branch updates
+  - Deploys frontend to Vercel
+  - Deploys backend to your configured cloud service (requires setup)
+
+## Backup and Recovery
+
+1. **Database Backups**
+
+   Supabase provides automatic backups. Additionally:
+   - Set up scheduled exports of critical data
+   - Store backups in a separate storage service
+
+2. **Recovery Process**
+
+   In case of failure:
+   - Restore from latest Supabase backup
+   - Redeploy application containers
+   - Verify system integrity with health checks
+
+## Security Considerations
+
+1. **API Security**
+
+   - All endpoints are protected with JWT authentication
+   - Rate limiting is configured in the Caddy proxy
+   - Sensitive environment variables are securely stored
+
+2. **Frontend Security**
+
+   - Content Security Policy (CSP) is configured
+   - HTTPS is enforced
+   - Authentication tokens are securely stored
+
+3. **Regular Updates**
+
+   - Keep dependencies updated
+   - Rotate API keys periodically
+   - Monitor security advisories
 
 ## Troubleshooting
 
-- **Authentication Issues**: Check Supabase console for auth logs
-- **API Connection Errors**: Verify CORS settings and environment variables
-- **Deployment Failures**: Check build logs in Vercel or your backend hosting platform
+### Common Issues
+
+1. **API Connection Errors**
+   - Check network connectivity
+   - Verify API URL configuration
+   - Ensure environment variables are correctly set
+
+2. **Authentication Problems**
+   - Verify Supabase configuration
+   - Check JWT token expiration settings
+   - Review authentication logs in Supabase
+
+3. **LLM Integration Issues**
+   - Verify API key validity
+   - Check rate limits
+   - Monitor LangSmith for errors
+
+### Support Resources
+
+- GitHub Issues: [https://github.com/antwoine-uplabs/interview-bot/issues](https://github.com/antwoine-uplabs/interview-bot/issues)
+- Documentation: [Repository Wiki](https://github.com/antwoine-uplabs/interview-bot/wiki)
+
+## Maintenance
+
+1. **Regular Tasks**
+   - Monitor error rates in Sentry
+   - Review system logs
+   - Check for security updates
+
+2. **Scaling Considerations**
+   - Increase instance size for higher load
+   - Consider implementing a distributed architecture for high volume
+   - Set up autoscaling for variable loads
+
+3. **Cost Optimization**
+   - Monitor LLM API usage
+   - Analyze performance metrics
+   - Optimize container resources

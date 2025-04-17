@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: interview-evaluator-api
+    ports:
+      - "8000:8000"
+    environment:
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - SENTRY_DSN=${SENTRY_DSN}
+      - LANGSMITH_API_KEY=${LANGSMITH_API_KEY}
+      - LANGSMITH_PROJECT=interview-evaluator-prod
+      - LANGSMITH_TRACING_V2=true
+      - LANGCHAIN_TRACING_V2=true
+    volumes:
+      - ./uploads:/app/uploads
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: interview-evaluator-frontend
+    depends_on:
+      - api
+    ports:
+      - "80:80"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+
+  # Add Caddy as a reverse proxy (optional - for SSL)
+  caddy:
+    image: caddy:2
+    container_name: interview-evaluator-caddy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - api
+      - frontend
+    restart: unless-stopped
+
+volumes:
+  caddy_data:
+  caddy_config:
