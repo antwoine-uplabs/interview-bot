@@ -1,30 +1,25 @@
-fastapi
-uvicorn[standard]
-python-dotenv
-pydantic>=2.0.0
-python-multipart
+# Core API dependencies
+fastapi==0.110.0
+uvicorn[standard]==0.28.0
+python-dotenv==1.0.1
+pydantic==2.6.0
+python-multipart==0.0.9
+httpx==0.27.0
+email-validator==2.1.0
 
-# Database and storage
-supabase
+# Database and Storage
+supabase==2.3.0
 
-# LLM frameworks
-llama-index
-langchain
-langgraph
+# LLM frameworks - only what's necessary for production
+langchain==0.1.5
+langgraph==0.0.30
 
-# LangSmith for monitoring and evaluation
-langsmith
+# Monitoring and Error Tracking
+sentry-sdk==1.39.2
 
-# LLM providers (uncomment as needed)
-openai
-# anthropic
-# cohere
+# Only keep necessary LLM provider
+openai==1.12.0
+langchain-openai==0.0.5
 
-# Provider integrations
-llama-index-llms-openai
-langchain-openai
-
-# Testing and development
-pytest
-black
-isort 
+# Version specification for Vercel
+# Note: Do not use python-x.x here as it's not supported by Vercel
