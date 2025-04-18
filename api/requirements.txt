@@ -1,0 +1,16 @@
+fastapi==0.110.0
+uvicorn==0.28.0
+python-dotenv==1.0.1
+pydantic>=2.0.0
+supabase==2.3.0
+httpx==0.26.0
+python-multipart==0.0.9
+sentry-sdk==1.39.2
+
+# LLM frameworks (minimal versions for Vercel)
+openai==1.12.0
+
+# For compatibility with the main app
+langchain==0.0.344
+langgraph>=0.0.30
+langsmith==0.0.86

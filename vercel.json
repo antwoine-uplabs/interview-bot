@@ -1,4 +1,5 @@
 {
+  "version": 2,
   "builds": [
     {
       "src": "api/index.py",
@@ -7,8 +8,28 @@
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
+      "src": "/(.*)",
       "dest": "/api/index.py"
+    }
+  ],
+  "env": {
+    "APP_MODULE": "api.index:app",
+    "PYTHON_VERSION": "3.10"
+  },
+  "functions": {
+    "api/index.py": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, PUT, DELETE, OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "X-Requested-With, Content-Type, Accept, Authorization" }
+      ]
     }
   ],
   "excludeFiles": [
@@ -31,16 +52,15 @@
     "Dockerfile",
     "docker-compose.yml",
     "Caddyfile",
-    "README.md",
+    "README.md", 
     "setup.py",
     "pytest.ini",
     "CLAUDE.md",
     "status.md",
     "SUPABASE_SETUP.md",
     "*.sql",
-    "*.js",
     "*.sh",
     "package.json",
     "package-lock.json"
   ]
-} 
+}
