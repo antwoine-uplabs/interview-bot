@@ -5,13 +5,13 @@
  * It provides methods for uploading transcripts and retrieving evaluation results.
  */
 
-// API base URL from environment variables
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+// API base URL - use relative URLs for proxy (default) or explicit URL for direct connection
+const API_BASE_URL = import.meta.env.VITE_API_DIRECT_URL || '';
 
 // Debug log for API URL
-console.log('API Base URL:', API_BASE_URL);
+console.log('API Base URL:', API_BASE_URL || '(using proxy)');
 console.log('Environment Variables:', {
-  VITE_API_URL: import.meta.env.VITE_API_URL,
+  VITE_API_DIRECT_URL: import.meta.env.VITE_API_DIRECT_URL,
   MODE: import.meta.env.MODE,
   DEV: import.meta.env.DEV,
   PROD: import.meta.env.PROD
@@ -244,20 +244,31 @@ export async function healthCheck(): Promise<{ status: string, dependencies?: Re
   console.log('Trying health check endpoint');
   
   try {
-    console.log('Calling health check at:', `${API_BASE_URL}/health`);
-    const response = await fetch(`${API_BASE_URL}/health`);
+    // Use /health endpoint which is proxied by our serverless function
+    const url = '/health';
+    console.log('Calling health check at:', url);
     
-    if (response.ok) {
-      console.log('Health check succeeded with /health');
-      return await response.json();
+    const response = await fetch(url, {
+      // Add cache control to prevent caching issues
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
+    });
+    
+    if (!response.ok) {
+      console.error('Health check failed with status:', response.status);
+      throw new Error(`Health check failed with status: ${response.status}`);
     }
-    console.log('Health check failed with /health, status:', response.status);
+    
+    const data = await response.json();
+    console.log('Health check succeeded:', data);
+    return data;
   } catch (error) {
-    console.log('Error with /health endpoint:', error);
+    console.error('Health check error:', error);
+    throw new ApiError('Health check failed', 500);
   }
-  
-  // If all checks fail, throw an error
-  throw new ApiError('Health check failed for all attempted endpoints', 500);
 }
 
 /**
