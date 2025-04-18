@@ -82,6 +82,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(analytics_router)
+
 # Middleware to track API requests
 @app.middleware("http")
 async def monitoring_middleware(request: Request, call_next):
