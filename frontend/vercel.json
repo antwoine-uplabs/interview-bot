@@ -1,6 +1,7 @@
 {
   "rewrites": [
     { "source": "/api/:path*", "destination": "https://interview-bot-gamma.vercel.app/api/:path*" },
+    { "source": "/health", "destination": "https://interview-bot-gamma.vercel.app/health" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "buildCommand": "npm install && npm run build",
