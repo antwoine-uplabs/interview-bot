@@ -73,7 +73,7 @@ class CostMonitoringService:
         """Sync cost data with LangSmith."""
         try:
             # Get LangSmith client
-            if not langsmith_service or not langsmith_service.is_connected():
+            if not langsmith_service or not langsmith_service.is_configured():
                 logger.warning("LangSmith client not available for cost monitoring")
                 return
             
