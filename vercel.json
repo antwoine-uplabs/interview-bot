@@ -4,8 +4,7 @@
       "src": "api/index.py",
       "use": "@vercel/python",
       "config": {
-        "maxLambdaSize": "15mb",
-        "runtime": "python3.10"
+        "maxLambdaSize": "15mb"
       }
     }
   ],
@@ -16,7 +15,6 @@
     }
   ],
   "env": {
-    "APP_MODULE": "api.index:app",
-    "PYTHON_VERSION": "3.10"
+    "APP_MODULE": "api.index:app"
   }
 }

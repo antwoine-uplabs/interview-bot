@@ -1,6 +1,9 @@
 {
-  "dependencies": {
-    "@supabase/supabase-js": "^2.49.4",
-    "@vercel/analytics": "^1.5.0"
-  }
+  "name": "interview-evaluator-api",
+  "version": "1.0.0",
+  "description": "API backend for Interview Evaluator",
+  "engines": {
+    "node": "18.x"
+  },
+  "private": true
 }
