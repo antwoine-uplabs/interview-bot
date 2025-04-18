@@ -1,0 +1,57 @@
+version: 2
+updates:
+  # Frontend dependencies
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "antwoine-uplabs"
+    labels:
+      - "dependencies"
+      - "frontend"
+    groups:
+      dev-dependencies:
+        patterns:
+          - "@types/*"
+          - "vite"
+          - "eslint*"
+        update-types:
+          - "minor"
+          - "patch"
+  
+  # Backend dependencies
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "antwoine-uplabs"
+    labels:
+      - "dependencies"
+      - "backend"
+    groups:
+      llm-dependencies:
+        patterns:
+          - "langchain*"
+          - "openai"
+      test-dependencies:
+        patterns:
+          - "pytest*"
+          - "black"
+          - "isort"
+        update-types:
+          - "minor"
+          - "patch"
+  
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "ci-cd"

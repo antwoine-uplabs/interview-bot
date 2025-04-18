@@ -1,0 +1,122 @@
+name: Production Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        options:
+          - staging
+          - production
+
+jobs:
+  approve-production:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.environment == 'production'
+    environment: production-approval
+    steps:
+      - name: Production deployment approved
+        run: echo "Production deployment approved"
+
+  deploy-backend:
+    runs-on: ubuntu-latest
+    needs: [approve-production]
+    if: always() && (needs.approve-production.result == 'success' || github.event.inputs.environment == 'staging')
+    environment: ${{ github.event.inputs.environment }}
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Login to container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.CONTAINER_REGISTRY }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+      
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.CONTAINER_REGISTRY }}/interview-evaluator-backend:${{ github.sha }},${{ secrets.CONTAINER_REGISTRY }}/interview-evaluator-backend:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            SENTRY_DSN=${{ secrets.BACKEND_SENTRY_DSN }}
+      
+      - name: Deploy to cloud service
+        run: |
+          # Replace with actual deployment commands for your cloud provider
+          echo "Deploying backend to ${{ github.event.inputs.environment }} environment"
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          LANGSMITH_API_KEY: ${{ secrets.LANGSMITH_API_KEY }}
+          SENTRY_DSN: ${{ secrets.BACKEND_SENTRY_DSN }}
+
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    needs: [deploy-backend]
+    environment: ${{ github.event.inputs.environment }}
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: './frontend/package-lock.json'
+      
+      - name: Install dependencies
+        working-directory: ./frontend
+        run: npm ci
+      
+      - name: Build frontend
+        working-directory: ./frontend
+        run: npm run build
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
+      
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v20
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./frontend
+          vercel-args: '--prod'
+
+  post-deployment:
+    runs-on: ubuntu-latest
+    needs: [deploy-frontend]
+    environment: ${{ github.event.inputs.environment }}
+    
+    steps:
+      - name: Run health checks
+        run: |
+          echo "Running health checks against deployed services"
+          # Add actual health check commands
+      
+      - name: Send deployment notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: deployments
+          SLACK_TITLE: Deployment Complete
+          SLACK_MESSAGE: "Successfully deployed to ${{ github.event.inputs.environment }} environment"
+          SLACK_COLOR: ${{ job.status }}
+          MSG_MINIMAL: false
