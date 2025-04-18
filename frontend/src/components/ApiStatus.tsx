@@ -11,13 +11,15 @@ export default function ApiStatus() {
   useEffect(() => {
     const checkApiStatus = async () => {
       try {
+        console.log('Starting API health check');
         const result = await healthCheck();
+        console.log('Health check result:', result);
         setApiStatus(result.status === 'ok' ? 'connected' : 'disconnected');
         setDetails(result.dependencies || null);
         setError(null);
       } catch (err) {
         setApiStatus('disconnected');
-        setError('Failed to connect to API');
+        setError(err instanceof Error ? err.message : 'Failed to connect to API');
         console.error('API health check failed:', err);
       }
     };

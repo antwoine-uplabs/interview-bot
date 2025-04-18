@@ -8,6 +8,15 @@
 // API base URL from environment variables
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
+// Debug log for API URL
+console.log('API Base URL:', API_BASE_URL);
+console.log('Environment Variables:', {
+  VITE_API_URL: import.meta.env.VITE_API_URL,
+  MODE: import.meta.env.MODE,
+  DEV: import.meta.env.DEV,
+  PROD: import.meta.env.PROD
+});
+
 // Types
 export interface EvaluationCriterion {
   name: string;
@@ -232,6 +241,7 @@ export async function evaluateTranscript(interviewId: string, candidateName: str
  * Get a health check from the API
  */
 export async function healthCheck(): Promise<{ status: string, dependencies?: Record<string, string> }> {
+  console.log('Calling health check at:', `${API_BASE_URL}/health`);
   try {
     const response = await fetch(`${API_BASE_URL}/health`);
     
