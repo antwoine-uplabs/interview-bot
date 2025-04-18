@@ -1,6 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import * as Sentry from '@sentry/react'
+import { Analytics } from '@vercel/analytics/react'
 import './index.css'
 import App from './App.tsx'
 
@@ -23,5 +24,6 @@ Sentry.init({
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
+    <Analytics />
   </StrictMode>,
 )

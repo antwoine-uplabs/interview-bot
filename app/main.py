@@ -11,7 +11,8 @@ from typing import Dict, Any, Optional
 import sentry_sdk
 from fastapi import BackgroundTasks, Depends, FastAPI, File, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 from sentry_sdk.integrations.logging import LoggingIntegration
 from sentry_sdk.integrations.starlette import StarletteIntegration
@@ -936,6 +937,76 @@ async def upload_transcript(
             status_code=500,
             detail="An unexpected error occurred while processing the transcript"
         )
+
+
+# API documentation and web page with Vercel Analytics
+@app.get("/", tags=["General"])
+async def root():
+    """
+    Root endpoint that returns a simple HTML page with documentation links
+    """
+    # Create a simple HTML page with Vercel Analytics script
+    html_content = """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Interview Evaluator API</title>
+        <style>
+            body {
+                font-family: system-ui, -apple-system, sans-serif;
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+                line-height: 1.6;
+            }
+            h1 {
+                color: #333;
+            }
+            a {
+                color: #0070f3;
+                text-decoration: none;
+            }
+            a:hover {
+                text-decoration: underline;
+            }
+            .container {
+                background-color: #f7f7f7;
+                border-radius: 8px;
+                padding: 20px;
+                margin-top: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Interview Evaluator API</h1>
+        <p>Welcome to the Interview Evaluator API service. This API provides endpoints for evaluating data scientist interview transcripts.</p>
+        
+        <div class="container">
+            <h2>API Documentation</h2>
+            <p>For complete API documentation and interactive testing, visit:</p>
+            <ul>
+                <li><a href="/docs">Swagger UI Documentation</a></li>
+                <li><a href="/redoc">ReDoc Documentation</a></li>
+            </ul>
+            
+            <h2>Health Check</h2>
+            <p>To check the API health status, visit:</p>
+            <ul>
+                <li><a href="/health">Health Check Endpoint</a></li>
+            </ul>
+        </div>
+        
+        <!-- Vercel Web Analytics -->
+        <script>
+        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+        </script>
+        <script defer src="/_vercel/insights/script.js"></script>
+    </body>
+    </html>
+    """
+    return HTMLResponse(content=html_content)
 
 
 if __name__ == "__main__":
