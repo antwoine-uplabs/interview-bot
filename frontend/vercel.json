@@ -1,7 +1,7 @@
 {
   "rewrites": [
-    { "source": "/api/:path*", "destination": "https://interview-bot-gamma.vercel.app/api/:path*" },
-    { "source": "/health", "destination": "https://interview-bot-gamma.vercel.app/health" },
+    { "source": "/api/:path*", "destination": "https://interview-bot-api.vercel.app/api/:path*" },
+    { "source": "/health", "destination": "https://interview-bot-api.vercel.app/health" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "buildCommand": "npm install && npm run build",
@@ -15,10 +15,11 @@
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Origin", "value": "https://interview-bot-api.vercel.app" },
         { "key": "Access-Control-Allow-Methods", "value": "GET, POST, PUT, DELETE, OPTIONS" },
         { "key": "Access-Control-Allow-Headers", "value": "X-Requested-With, Content-Type, Accept, Authorization, X-CSRF-Token, Accept-Version, Content-Length, Content-MD5, Date, X-Api-Version" }
       ]
     }
-  ]
+  ],
+  "relatedProjects": ["interview-bot-api"]
 }

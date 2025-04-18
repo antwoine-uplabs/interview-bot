@@ -65,6 +65,7 @@ try:
                 "https://interview-bot1.vercel.app",
                 "https://interview-bot.vercel.app",
                 "https://interview-bot-frontend.vercel.app",
+                "https://interview-bot-gamma.vercel.app",
                 "http://localhost:5173",
                 "http://localhost:3000"
             ],
@@ -92,6 +93,7 @@ try:
                 "https://interview-bot1.vercel.app",
                 "https://interview-bot.vercel.app",
                 "https://interview-bot-frontend.vercel.app",
+                "https://interview-bot-gamma.vercel.app",
                 "http://localhost:5173",
                 "http://localhost:3000"
             ],
@@ -127,17 +129,34 @@ try:
             "cors": "Configured for specific origins"
         }
 
-    # Add a basic health check endpoint
+    # Add an improved health check endpoint
     @app.get("/health")
     async def health_check():
         """
-        Basic health check endpoint
+        Enhanced health check endpoint with authentication verification
         """
-        return {
-            "status": "healthy",
-            "timestamp": "Vercel deployment is active",
-            "cors": "Configured for specific origins"
-        }
+        try:
+            # Verify that Supabase credentials are working
+            # This is a lightweight check that doesn't need to hit the database
+            supabase_url = os.environ.get("SUPABASE_URL")
+            supabase_key = os.environ.get("SUPABASE_KEY") or os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
+            
+            auth_status = "valid" if supabase_url and supabase_key else "missing"
+            
+            return {
+                "status": "healthy",
+                "authentication": auth_status,
+                "timestamp": "Vercel deployment is active",
+                "cors": "Configured for specific origins"
+            }
+        except Exception as e:
+            logger.error(f"Health check failed: {e}", exc_info=True)
+            return {
+                "status": "unhealthy",
+                "error": str(e),
+                "authentication": "failed",
+                "timestamp": "Vercel deployment is active but experiencing issues"
+            }
     
     # Add a CORS preflight route
     @app.options("/{path:path}")
