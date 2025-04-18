@@ -91,3 +91,8 @@ npm run build   # Type check and build
 ### Development Environment
 - For local testing, use custom mock services for Supabase and LangSmith to avoid external service dependencies
 - When using `langgraph dev`, a fixed port must be specified to avoid conflicts
+
+### Backend Server 
+- The FastAPI server may fail with "Address already in use" if port 8000 is occupied. Use `--port 8001` as an alternative.
+- When running the server, you may see non-critical startup errors related to cost monitoring and LangSmith synchronization when using mock services
+- The `supabase_client.py` requires the `get_supabase_client()` function to be defined to return the `supabase_service` singleton

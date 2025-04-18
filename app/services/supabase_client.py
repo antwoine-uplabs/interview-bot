@@ -75,6 +75,75 @@ class SupabaseService:
         """Mock storing criteria evaluations"""
         logger.info(f"[MOCK] Storing {len(criteria_evaluations)} criteria evaluations for interview {interview_id}")
         return True
+    
+    def table(self, table_name: str):
+        """Mock Supabase table operation"""
+        logger.info(f"[MOCK] Accessing table: {table_name}")
+        return MockTableQuery(table_name)
+
+
+class MockTableQuery:
+    """Mock implementation for Supabase table queries"""
+    
+    def __init__(self, table_name: str):
+        self.table_name = table_name
+        self.conditions = []
+    
+    def select(self, columns: str = "*"):
+        """Mock select operation"""
+        logger.info(f"[MOCK] SELECT {columns} FROM {self.table_name}")
+        return self
+    
+    def insert(self, data: Dict[str, Any]):
+        """Mock insert operation"""
+        logger.info(f"[MOCK] INSERT INTO {self.table_name}: {str(data)[:100]}...")
+        return self
+    
+    def update(self, data: Dict[str, Any]):
+        """Mock update operation"""
+        logger.info(f"[MOCK] UPDATE {self.table_name} SET {str(data)[:100]}...")
+        return self
+    
+    def eq(self, column: str, value: Any):
+        """Mock equality condition"""
+        logger.info(f"[MOCK] WHERE {column} = {value}")
+        self.conditions.append((column, value))
+        return self
+    
+    def limit(self, limit: int):
+        """Mock limit operation"""
+        logger.info(f"[MOCK] LIMIT {limit}")
+        return self
+    
+    def order(self, column: str, options: Dict[str, Any] = None):
+        """Mock order operation"""
+        direction = "ASC"
+        if options and options.get("ascending") is False:
+            direction = "DESC"
+        logger.info(f"[MOCK] ORDER BY {column} {direction}")
+        return self
+    
+    def range(self, start: int, end: int):
+        """Mock range operation"""
+        logger.info(f"[MOCK] RANGE {start} to {end}")
+        return self
+    
+    async def execute(self):
+        """Mock execution returning empty data"""
+        logger.info(f"[MOCK] Executing query on {self.table_name}")
+        return MockResponse()
+
+
+class MockResponse:
+    """Mock response from Supabase"""
+    
+    def __init__(self):
+        self.data = []
+
 
 # Create a singleton instance
 supabase_service = SupabaseService()
+
+def get_supabase_client():
+    """Return the supabase service singleton instance."""
+    return supabase_service

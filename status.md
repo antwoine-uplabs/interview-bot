@@ -220,6 +220,8 @@
    - Create cost monitoring for LLM API usage
    - Final verification of CI/CD pipeline functionality
    - Conduct user acceptance testing
+   - Fix LangGraph deployment issues (FIXED: langgraph.json configuration)
+   - Fix Backend server issues (FIXED: added get_supabase_client function to supabase_client.py)
 
 2. **Technical Improvements**:
    - Add structured output parsing for LLM responses

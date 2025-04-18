@@ -2,6 +2,8 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.egg-info/
+*.egg
 
 # Virtual environment
 venv/
@@ -27,4 +29,17 @@ yarn-error.log*
 
 # Operating system files
 .DS_Store
-Thumbs.db 
+Thumbs.db
+
+# Output files
+output/
+
+# Temporary files
+*.tmp
+*.bak
+.pytest_cache/
+
+# Coverage reports
+.coverage
+htmlcov/
+coverage/
