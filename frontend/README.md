@@ -1,54 +1,65 @@
-# React + TypeScript + Vite
+# Interview Evaluator Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Frontend Deployment Guide
 
-Currently, two official plugins are available:
+### Option 1: Deploy via Vercel Dashboard
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. Log in to your Vercel dashboard
+2. Click "Add New" → "Project"
+3. Select your GitHub repository
+4. Configure the project:
+   - Root Directory: `frontend` (important!)
+   - Framework Preset: Vite
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
+5. Under Environment Variables, add:
+   - `VITE_SUPABASE_URL`: Your Supabase project URL
+   - `VITE_SUPABASE_ANON_KEY`: Your public Supabase anon key
+   - `VITE_API_URL`: Your deployed API URL (e.g., https://interview-bot-gamma.vercel.app)
+6. Click "Deploy"
 
-## Expanding the ESLint configuration
+### Option 2: Deploy via CLI
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. Install Vercel CLI if not already installed:
+   ```
+   npm install -g vercel
+   ```
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+2. Make sure you're in the frontend directory:
+   ```
+   cd /path/to/resume/frontend
+   ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+3. Run the deployment command:
+   ```
+   vercel --prod
+   ```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+4. Follow the prompts:
+   - When asked to set up and deploy, select "Yes"
+   - When asked about the scope, select your user or team
+   - When asked about linking to existing project, select "No"
+   - Configure project settings:
+     - Want to override settings? Select "Yes"
+     - Set the directory to `.` (current directory)
+     - Build command: `npm run build`
+     - Output directory: `dist`
+     - Development command: `npm run dev`
+   - Add environment variables from the .env file if prompted
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+## Local Development
+
+1. Install dependencies:
+   ```
+   npm install
+   ```
+
+2. Run development server:
+   ```
+   npm run dev
+   ```
+
+3. Build for production:
+   ```
+   npm run build
+   ```
