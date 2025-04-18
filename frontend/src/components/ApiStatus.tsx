@@ -21,8 +21,8 @@ export default function ApiStatus() {
           result.status === 'ok' || 
           result.status === 'success' || 
           result.status === 'healthy' || 
-          result.status === 200 || 
-          result.status === true
+          (typeof result.status === 'number' && result.status === 200) || 
+          (typeof result.status === 'boolean' && result.status === true)
         );
         
         setApiStatus(isConnected ? 'connected' : 'disconnected');
