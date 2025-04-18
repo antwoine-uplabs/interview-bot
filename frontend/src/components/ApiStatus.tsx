@@ -14,7 +14,18 @@ export default function ApiStatus() {
         console.log('Starting API health check');
         const result = await healthCheck();
         console.log('Health check result:', result);
-        setApiStatus(result.status === 'ok' ? 'connected' : 'disconnected');
+        
+        // Consider any valid response as success, even if status isn't exactly 'ok'
+        // For this API, it uses 'healthy' instead of 'ok'
+        const isConnected = result && (
+          result.status === 'ok' || 
+          result.status === 'success' || 
+          result.status === 'healthy' || 
+          result.status === 200 || 
+          result.status === true
+        );
+        
+        setApiStatus(isConnected ? 'connected' : 'disconnected');
         setDetails(result.dependencies || null);
         setError(null);
       } catch (err) {

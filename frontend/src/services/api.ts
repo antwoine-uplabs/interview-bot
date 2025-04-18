@@ -241,22 +241,23 @@ export async function evaluateTranscript(interviewId: string, candidateName: str
  * Get a health check from the API
  */
 export async function healthCheck(): Promise<{ status: string, dependencies?: Record<string, string> }> {
-  console.log('Calling health check at:', `${API_BASE_URL}/health`);
+  console.log('Trying health check endpoint');
+  
   try {
+    console.log('Calling health check at:', `${API_BASE_URL}/health`);
     const response = await fetch(`${API_BASE_URL}/health`);
     
-    if (!response.ok) {
-      throw new ApiError(`Health check failed with status: ${response.status}`, response.status);
+    if (response.ok) {
+      console.log('Health check succeeded with /health');
+      return await response.json();
     }
-    
-    return await response.json();
+    console.log('Health check failed with /health, status:', response.status);
   } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    } else {
-      throw new ApiError('An unexpected error occurred during health check', 500);
-    }
+    console.log('Error with /health endpoint:', error);
   }
+  
+  // If all checks fail, throw an error
+  throw new ApiError('Health check failed for all attempted endpoints', 500);
 }
 
 /**
