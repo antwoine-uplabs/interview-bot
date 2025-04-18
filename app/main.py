@@ -32,6 +32,8 @@ from app.services.monitoring import get_monitoring_service
 from app.services.supabase_client import get_supabase_client
 from app.services.transcript_processor import transcript_processor
 from app.utils.file_utils import save_uploaded_file
+# Import CORS testing router
+from api.cors_test import router as cors_test_router
 
 # Load environment variables
 load_dotenv()
@@ -74,15 +76,19 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",  # Frontend Vite default port (development)
         "http://localhost:3000",  # Alternative local development port
-        "https://*.vercel.app",   # Vercel preview deployments
+        "https://interview-bot1.vercel.app",  # Your frontend URL
+        "https://interview-bot-frontend.vercel.app",  # Alternative frontend URL
+        "https://*.vercel.app",   # All Vercel preview deployments
         "https://*.interview-evaluator.app"  # Production domain
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"]
 )
 
-app.include_router(analytics_router)
+# Include the CORS test router
+app.include_router(cors_test_router)
 
 # Middleware to track API requests
 @app.middleware("http")
@@ -1000,6 +1006,7 @@ async def root():
             <p>To check the API health status, visit:</p>
             <ul>
                 <li><a href="/health">Health Check Endpoint</a></li>
+                <li><a href="/cors-test">CORS Test Endpoint</a></li>
             </ul>
         </div>
         

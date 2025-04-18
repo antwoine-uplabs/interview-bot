@@ -51,6 +51,30 @@ try:
         # Try to import from app.main
         from app.main import app
         logger.info("Successfully imported app from app.main")
+        
+        # Remove any existing CORS middleware if present
+        for middleware in app.user_middleware:
+            if isinstance(middleware, CORSMiddleware):
+                app.user_middleware.remove(middleware)
+                logger.info("Removed existing CORS middleware")
+                
+        # Add updated CORS middleware with explicit origins
+        app.add_middleware(
+            CORSMiddleware,
+            allow_origins=[
+                "https://interview-bot1.vercel.app",
+                "https://interview-bot.vercel.app",
+                "https://interview-bot-frontend.vercel.app",
+                "http://localhost:5173",
+                "http://localhost:3000"
+            ],
+            allow_credentials=True,
+            allow_methods=["*"],
+            allow_headers=["*"],
+            expose_headers=["*"]
+        )
+        logger.info("Added CORS middleware with explicit origins")
+        
     except ImportError as e:
         logger.error(f"Error importing app from app.main: {e}")
         logger.info("Creating fallback FastAPI app")
@@ -61,14 +85,22 @@ try:
             version="1.0.0"
         )
         
-        # Add CORS middleware
+        # Add CORS middleware with explicit origins
         app.add_middleware(
             CORSMiddleware,
-            allow_origins=["*"],
+            allow_origins=[
+                "https://interview-bot1.vercel.app",
+                "https://interview-bot.vercel.app",
+                "https://interview-bot-frontend.vercel.app",
+                "http://localhost:5173",
+                "http://localhost:3000"
+            ],
             allow_credentials=True,
             allow_methods=["*"],
             allow_headers=["*"],
+            expose_headers=["*"]
         )
+        logger.info("Added CORS middleware with explicit origins to fallback app")
         
         # Add error handler for internal server errors
         @app.exception_handler(Exception)
@@ -91,7 +123,8 @@ try:
             "service": "Interview Evaluator API",
             "version": "1.0.0",
             "documentation": "/docs",
-            "health_check": "/health"
+            "health_check": "/health",
+            "cors": "Configured for specific origins"
         }
 
     # Add a basic health check endpoint
@@ -102,8 +135,17 @@ try:
         """
         return {
             "status": "healthy",
-            "timestamp": "Vercel deployment is active"
+            "timestamp": "Vercel deployment is active",
+            "cors": "Configured for specific origins"
         }
+    
+    # Add a CORS preflight route
+    @app.options("/{path:path}")
+    async def options_route(path: str):
+        """
+        Handle CORS preflight requests
+        """
+        return {}
         
     logger.info("API initialization complete")
 
