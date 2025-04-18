@@ -8,10 +8,15 @@ export default async function handler(req, res) {
   try {
     console.log(`Proxying request to: ${targetUrl}${requestPath}`);
     
+    // Extract the content type from the request
+    const contentType = req.headers['content-type'] || '';
+    
+    // Set up base fetch options
     const fetchOptions = {
       method: req.method,
       headers: {
-        'Content-Type': 'application/json',
+        // Don't set content-type for multipart requests, let the browser set it with the boundary
+        ...(!contentType.includes('multipart/form-data') && { 'Content-Type': contentType }),
         // Forward authorization headers if present
         ...(req.headers.authorization && { 
           'Authorization': req.headers.authorization 
@@ -19,17 +24,32 @@ export default async function handler(req, res) {
       }
     };
     
-    // Add body for non-GET requests
+    // Handle different types of request bodies
     if (req.method !== 'GET' && req.method !== 'HEAD' && req.body) {
-      fetchOptions.body = JSON.stringify(req.body);
+      if (contentType.includes('multipart/form-data')) {
+        // For file uploads, we need to pass the raw request
+        // This requires special handling in Vercel serverless functions
+        const { readBody } = await import('@vercel/node');
+        const rawBody = await readBody(req, true);
+        fetchOptions.body = rawBody;
+        
+        // Pass through content-type with boundary
+        fetchOptions.headers['Content-Type'] = contentType;
+      } else if (contentType.includes('application/json')) {
+        // For JSON data, we can stringify
+        fetchOptions.body = JSON.stringify(req.body);
+      } else {
+        // For other data types, pass as is
+        fetchOptions.body = req.body;
+      }
     }
     
     const response = await fetch(`${targetUrl}${requestPath}`, fetchOptions);
     
     // Get response data
     let data;
-    const contentType = response.headers.get('content-type');
-    if (contentType && contentType.includes('application/json')) {
+    const responseContentType = response.headers.get('content-type');
+    if (responseContentType && responseContentType.includes('application/json')) {
       data = await response.json();
     } else {
       data = await response.text();
