@@ -3,7 +3,7 @@ fastapi==0.110.0
 uvicorn[standard]==0.28.0
 python-dotenv==1.0.1
 pydantic==2.6.0
-python-multipart==0.0.9
+python-multipart==0.0.20
 email-validator==2.1.0
 
 # Database and Storage - use version 1.2.0 which is compatible with httpx 0.24.1
