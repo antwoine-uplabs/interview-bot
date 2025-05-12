@@ -12,7 +12,7 @@ httpx==0.24.1
 
 # LLM frameworks
 langchain==0.1.5
-langgraph==0.0.30  # Using older stable version to reduce dependency conflicts
+langgraph==0.4.3  # Using older stable version to reduce dependency conflicts
 
 # Monitoring and Error Tracking
 sentry-sdk==1.39.2
